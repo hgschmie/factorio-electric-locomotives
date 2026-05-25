@@ -1,4 +1,7 @@
-# ElectricTrain
+# ElectricTrain2
+
+Updated for Factorio 2.0. Thanks to the original author (magu5026) at: https://github.com/magu5026/ElectricTrain/
+
 Mod for Factorio
 
 This mod adds 3 levels of electric trains and 2 improved cargo/fluid wagons.

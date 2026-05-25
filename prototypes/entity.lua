@@ -1,6 +1,6 @@
 local electric_locomotive_1 = table.deepcopy(data.raw['locomotive']['locomotive'])
 electric_locomotive_1.name = "et-electric-locomotive-1"
-electric_locomotive_1.icon = "__ElectricTrain__/graphics/loc1.png"
+electric_locomotive_1.icon = "__ElectricTrain2__/graphics/loc1.png"
 electric_locomotive_1.minable.result = "et-electric-locomotive-1"
 electric_locomotive_1.burner = {fuel_inventory_size = 0}
 electric_locomotive_1.icon_size = 32
@@ -8,7 +8,7 @@ electric_locomotive_1.icon_mipmaps = nil
 
 local electric_locomotive_2 = table.deepcopy(data.raw['locomotive']['locomotive'])
 electric_locomotive_2.name = "et-electric-locomotive-2"
-electric_locomotive_2.icon = "__ElectricTrain__/graphics/loc2.png"
+electric_locomotive_2.icon = "__ElectricTrain2__/graphics/loc2.png"
 electric_locomotive_2.minable.result = "et-electric-locomotive-2"
 electric_locomotive_2.burner = {fuel_inventory_size = 0}
 electric_locomotive_2.max_health = 1350
@@ -23,7 +23,7 @@ electric_locomotive_2.icon_mipmaps = nil
 
 local electric_locomotive_3 = table.deepcopy(data.raw['locomotive']['locomotive'])
 electric_locomotive_3.name = "et-electric-locomotive-3"
-electric_locomotive_3.icon = "__ElectricTrain__/graphics/loc3.png"
+electric_locomotive_3.icon = "__ElectricTrain2__/graphics/loc3.png"
 electric_locomotive_3.minable.result = "et-electric-locomotive-3"
 electric_locomotive_3.burner = {fuel_inventory_size = 0}
 electric_locomotive_3.max_health = 1700
@@ -44,7 +44,7 @@ data:extend
 	{
 		type = "electric-energy-interface",
 		name = "et-control-station-1",
-		icon = "__ElectricTrain__/graphics/relais-icon-1.png",
+		icon = "__ElectricTrain2__/graphics/relais-icon-1.png",
 		icon_size = 32,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 1, result = "et-control-station-1"},
@@ -57,13 +57,13 @@ data:extend
 		energy_source =
 		{
 			type = "electric",
-			buffer_capacity = "200KW",
+			buffer_capacity = "200000W",
 			usage_priority = "secondary-input",
 		},
-		energy_usage = "100KW",
+		energy_usage = "100000W",
 		picture =
 		{
-			filename = "__ElectricTrain__/graphics/relais-1.png",
+			filename = "__ElectricTrain2__/graphics/relais-1.png",
 			priority = "low",
 			width = 196,
 			height = 254,
@@ -76,7 +76,7 @@ data:extend
 
 local cargo_wagon_2 = table.deepcopy(data.raw['cargo-wagon']['cargo-wagon'])
 cargo_wagon_2.name = "et-cargo-wagon-2"
-cargo_wagon_2.icon = "__ElectricTrain__/graphics/cargo2.png"
+cargo_wagon_2.icon = "__ElectricTrain2__/graphics/cargo2.png"
 cargo_wagon_2.inventory_size = 60
 cargo_wagon_2.minable.result = "et-cargo-wagon-2"
 cargo_wagon_2.max_health = 800
@@ -90,7 +90,7 @@ cargo_wagon_2.icon_mipmaps = nil
 
 local cargo_wagon_3 = table.deepcopy(data.raw['cargo-wagon']['cargo-wagon'])
 cargo_wagon_3.name = "et-cargo-wagon-3"
-cargo_wagon_3.icon = "__ElectricTrain__/graphics/cargo3.png"
+cargo_wagon_3.icon = "__ElectricTrain2__/graphics/cargo3.png"
 cargo_wagon_3.inventory_size = 80
 cargo_wagon_3.minable.result = "et-cargo-wagon-3"
 cargo_wagon_3.max_health = 1000
@@ -107,7 +107,7 @@ data:extend({cargo_wagon_2,cargo_wagon_3})
 
 local fluid_wagon_2 = table.deepcopy(data.raw['fluid-wagon']['fluid-wagon'])
 fluid_wagon_2.name = "et-fluid-wagon-2"
-fluid_wagon_2.icon = "__ElectricTrain__/graphics/fluid2.png"
+fluid_wagon_2.icon = "__ElectricTrain2__/graphics/fluid2.png"
 fluid_wagon_2.capacity = 25000 * 1.5
 fluid_wagon_2.minable.result = "et-fluid-wagon-2"
 fluid_wagon_2.max_health = 800
@@ -121,7 +121,7 @@ fluid_wagon_2.icon_mipmaps = nil
 
 local fluid_wagon_3 = table.deepcopy(data.raw['fluid-wagon']['fluid-wagon'])
 fluid_wagon_3.name = "et-fluid-wagon-3"
-fluid_wagon_3.icon = "__ElectricTrain__/graphics/fluid3.png"
+fluid_wagon_3.icon = "__ElectricTrain2__/graphics/fluid3.png"
 fluid_wagon_3.capacity = 25000 * 2
 fluid_wagon_3.minable.result = "et-fluid-wagon-3"
 fluid_wagon_3.max_health = 1000
@@ -177,7 +177,11 @@ function CreateTrainInterface(train)
 			localised_name = {"entity-name." .. train.name},
 			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
 			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-			collision_mask = {"ground-tile"},
+			collision_mask = {
+				layers = {
+					ground_tile = true
+				}
+			},
 			selectable_in_game = false,
 			energy_source =
 			{
@@ -215,7 +219,11 @@ function InsertMUControl(name)
 			icon_size = 32,
 			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
 			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-			collision_mask = {"ground-tile"},
+			collision_mask = {
+				layers = {
+					ground_tile = true
+				}
+			},
 			selectable_in_game = false,
 			energy_source =
 			{

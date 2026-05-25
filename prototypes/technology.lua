@@ -5,7 +5,7 @@ data:extend
 		name = "et-electric-railway",
 		icon_size = 256,
 		icon_mipmaps = 4,
-		icon = "__ElectricTrain__/graphics/electric-railway.png",
+		icon = "__ElectricTrain2__/graphics/electric-railway.png",
 		effects =
 		{
 			{
@@ -44,7 +44,7 @@ function UnlockTrainTechnology()
 			name = "et-electric-railway-2",
 			icon_size = 256,
 			icon_mipmaps = 4,
-			icon = "__ElectricTrain__/graphics/electric-railway.png",
+			icon = "__ElectricTrain2__/graphics/electric-railway.png",
 			effects =
 			{
 				{
@@ -72,7 +72,7 @@ function UnlockTrainTechnology()
 			name = "et-electric-railway-3",
 			icon_size = 256,
 			icon_mipmaps = 4,
-			icon = "__ElectricTrain__/graphics/electric-railway.png",
+			icon = "__ElectricTrain2__/graphics/electric-railway.png",
 			effects =
 			{
 				{

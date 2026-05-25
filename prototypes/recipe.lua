@@ -1,147 +1,155 @@
 data:extend(
 {
-	{
-		type = "recipe",
-		name = "et-electric-locomotive-1",
-		enabled = false,
-		ingredients =
-		{
-			{"locomotive", 1},
-			{"et-current-collector", 2},
-			{"battery", 10},
-			{"electric-engine-unit", 10}
-		},
-		result = "et-electric-locomotive-1"
-	},
-	
-	{
-		type = "recipe",
-		name = "et-control-station-1",
-		enabled = false,
-		ingredients =
-		{
-			{"electronic-circuit", 20},
-			{"advanced-circuit", 20},
-			{"steel-plate", 10},
-			{"copper-cable", 10}
-		},
-		result = "et-control-station-1"
-	},
+    {
+        type = "recipe",
+        name = "et-electric-locomotive-1",
+        enabled = false,
+        ingredients = {
+            {type = "item", name = "locomotive", amount = 1},
+            {type = "item", name = "et-current-collector", amount = 2},
+            {type = "item", name = "battery", amount = 10},
+            {type = "item", name = "electric-engine-unit", amount = 10}
+        },
+        results = {
+            {type = "item", name = "et-electric-locomotive-1", amount = 1}
+        }
+    },
 
-	{
-		type = "recipe",
-		name = "et-current-collector",
-		enabled = false,
-		ingredients =
-		{
-			{"low-density-structure", 10},
-			{"copper-cable", 5},
-			{"iron-plate", 2}
-		},
-		result = "et-current-collector"
-	}
+    {
+        type = "recipe",
+        name = "et-control-station-1",
+        enabled = false,
+        ingredients = {
+            {type = "item", name = "electronic-circuit", amount = 20},
+            {type = "item", name = "advanced-circuit", amount = 20},
+            {type = "item", name = "steel-plate", amount = 10},
+            {type = "item", name = "copper-cable", amount = 10}
+        },
+        results = {
+            {type = "item", name = "et-control-station-1", amount = 1}
+        }
+    },
+
+    {
+        type = "recipe",
+        name = "et-current-collector",
+        enabled = false,
+        ingredients = {
+            {type = "item", name = "low-density-structure", amount = 10},
+            {type = "item", name = "copper-cable", amount = 5},
+            {type = "item", name = "iron-plate", amount = 2}
+        },
+        results = {
+            {type = "item", name = "et-current-collector", amount = 1}
+        }
+    }
 })
 
-
 function UnlockTrainRecipe()
-	data:extend(
-	{
-		{	
-			type = "recipe",
-			name = "et-electric-locomotive-2",
-			enabled = false,
-			ingredients =
-			{
-				{"et-electric-locomotive-1", 1},
-				{"low-density-structure", 10},
-				{"electric-engine-unit", 10},
-				{"advanced-circuit", 10}
-			},
-			result = "et-electric-locomotive-2"
-		},
-		
-		{	
-			type = "recipe",
-			name = "et-electric-locomotive-3",
-			enabled = false,
-			ingredients =
-			{
-				{"et-electric-locomotive-2", 1},
-				{"low-density-structure", 10},
-				{"electric-engine-unit", 10},
-				{"processing-unit", 10}	
-			},
-			result = "et-electric-locomotive-3"
-		}
-	})
+    data:extend(
+    {
+        {
+            type = "recipe",
+            name = "et-electric-locomotive-2",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "et-electric-locomotive-1", amount = 1},
+                {type = "item", name = "low-density-structure", amount = 10},
+                {type = "item", name = "electric-engine-unit", amount = 10},
+                {type = "item", name = "advanced-circuit", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-electric-locomotive-2", amount = 1}
+            }
+        },
+
+        {
+            type = "recipe",
+            name = "et-electric-locomotive-3",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "et-electric-locomotive-2", amount = 1},
+                {type = "item", name = "low-density-structure", amount = 10},
+                {type = "item", name = "electric-engine-unit", amount = 10},
+                {type = "item", name = "processing-unit", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-electric-locomotive-3", amount = 1}
+            }
+        }
+    })
 end
 
 function UnlockCargoRecipe()
-	data:extend(
-	{
-		{	
-			type = "recipe",
-			name = "et-cargo-wagon-2",
-			enabled = false,
-			ingredients =
-			{
-				{"cargo-wagon", 1},
-				{"iron-gear-wheel", 20},
-				{"steel-plate", 20},
-				{"low-density-structure", 10}	
-			},
-			result = "et-cargo-wagon-2"
-		},
-		
-		{	
-			type = "recipe",
-			name = "et-cargo-wagon-3",
-			enabled = false,
-			ingredients =
-			{
-				{"et-cargo-wagon-2", 1},
-				{"iron-gear-wheel", 20},
-				{"steel-plate", 20},
-				{"low-density-structure", 10}
-			},
-			result = "et-cargo-wagon-3"
-		}
-	})
+    data:extend(
+    {
+        {
+            type = "recipe",
+            name = "et-cargo-wagon-2",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "cargo-wagon", amount = 1},
+                {type = "item", name = "iron-gear-wheel", amount = 20},
+                {type = "item", name = "steel-plate", amount = 20},
+                {type = "item", name = "low-density-structure", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-cargo-wagon-2", amount = 1}
+            }
+        },
+
+        {
+            type = "recipe",
+            name = "et-cargo-wagon-3",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "et-cargo-wagon-2", amount = 1},
+                {type = "item", name = "iron-gear-wheel", amount = 20},
+                {type = "item", name = "steel-plate", amount = 20},
+                {type = "item", name = "low-density-structure", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-cargo-wagon-3", amount = 1}
+            }
+        }
+    })
 end
 
 function UnlockFluidRecipe()
-	data:extend(
-	{
-		{	
-			type = "recipe",
-			name = "et-fluid-wagon-2",
-			enabled = false,
-			ingredients =
-			{
-				{"fluid-wagon", 1},
-				{"iron-gear-wheel", 10},
-				{"steel-plate", 16},
-				{"pipe", 8},
-				{"storage-tank", 1},
-				{"low-density-structure", 10}
-			},
-			result = "et-fluid-wagon-2"
-		},
-		
-		{	
-			type = "recipe",
-			name = "et-fluid-wagon-3",
-			enabled = false,
-			ingredients =
-			{
-				{"et-fluid-wagon-2", 1},
-				{"iron-gear-wheel", 10},
-				{"steel-plate", 16},
-				{"pipe", 8},
-				{"storage-tank", 1},
-				{"low-density-structure", 10}	
-			},
-			result = "et-fluid-wagon-3"
-		}
-	})
+    data:extend(
+    {
+        {
+            type = "recipe",
+            name = "et-fluid-wagon-2",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "fluid-wagon", amount = 1},
+                {type = "item", name = "iron-gear-wheel", amount = 10},
+                {type = "item", name = "steel-plate", amount = 16},
+                {type = "item", name = "pipe", amount = 8},
+                {type = "item", name = "storage-tank", amount = 1},
+                {type = "item", name = "low-density-structure", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-fluid-wagon-2", amount = 1}
+            }
+        },
+
+        {
+            type = "recipe",
+            name = "et-fluid-wagon-3",
+            enabled = false,
+            ingredients = {
+                {type = "item", name = "et-fluid-wagon-2", amount = 1},
+                {type = "item", name = "iron-gear-wheel", amount = 10},
+                {type = "item", name = "steel-plate", amount = 16},
+                {type = "item", name = "pipe", amount = 8},
+                {type = "item", name = "storage-tank", amount = 1},
+                {type = "item", name = "low-density-structure", amount = 10}
+            },
+            results = {
+                {type = "item", name = "et-fluid-wagon-3", amount = 1}
+            }
+        }
+    })
 end

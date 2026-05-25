@@ -45,7 +45,7 @@ end
 script.on_load(OnLoad)
 
 function OnConfigurationChanged(data)
-	local modName = "ElectricTrain"
+	local modName = "ElectricTrain2"
 	if not IsModChanged(data,modName) then
 		Load()
 	else
