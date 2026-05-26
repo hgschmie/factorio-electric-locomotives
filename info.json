@@ -1,8 +1,8 @@
 {
-	"name": "ElectricTrain2",
-	"author": "magu5026, m1t0ch0ndr1a",
-	"version": "2.0.0",
-	"title": "Electric Train",
+	"name": "electric-locomotives",
+	"author": "hgschmie",
+	"version": "1.0.0",
+	"title": "Electric Locomotives",
 	"description": "Adds electric locomotives to the game.",
 	"factorio_version": "2.0",
 	"dependencies": [
