@@ -1,3 +1,11 @@
+------------------------------------------------------------------------
+-- data phase 3
+------------------------------------------------------------------------
+
+require('lib.init')
+
+------------------------------------------------------------------------
+
 function UpdateMUControl(train,mu_power)	
 	local power = format_number(train.max_power)	
 	local energy = power * 1.1
@@ -21,3 +29,8 @@ if mods['MultipleUnitTrainControl'] then
 	UpdateMUControl(data.raw['locomotive']['et-electric-locomotive-2-mu'],data.raw['electric-energy-interface']['et-electric-locomotive-2-mu-power'])
 	UpdateMUControl(data.raw['locomotive']['et-electric-locomotive-3-mu'],data.raw['electric-energy-interface']['et-electric-locomotive-3-mu-power'])
 end
+
+------------------------------------------------------------------------
+
+---@diagnostic disable-next-line: undefined-field
+Framework.post_data_final_fixes_stage()

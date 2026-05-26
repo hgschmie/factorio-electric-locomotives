@@ -1,4 +1,12 @@
-data:extend({
+------------------------------------------------------------------------
+-- settings phase
+------------------------------------------------------------------------
+
+require('lib.init')
+
+local const = require('lib.constants')
+
+data:extend {
 	{
 		type = "bool-setting",
 		name = "mk-train",

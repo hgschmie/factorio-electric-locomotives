@@ -1,4 +1,8 @@
-require("lib")
+------------------------------------------------------------------------
+-- runtime code
+------------------------------------------------------------------------
+
+require('lib.init')
 
 local anzLoc = 0
 local anzControl = 0
@@ -186,3 +190,8 @@ function OnTick()
 end
 --script.on_event(defines.events.on_tick,OnTick)
 script.on_nth_tick(2,OnTick)
+
+------------------------------------------------------------------------
+
+---@diagnostic disable-next-line: undefined-field
+Framework.post_runtime_stage()

@@ -1,3 +1,9 @@
+------------------------------------------------------------------------
+-- data phase 2
+------------------------------------------------------------------------
+
+require('lib.init')
+
 data.raw['item-with-entity-data']['locomotive'].subgroup = "electric-transport-loc"
 data.raw['item-with-entity-data']['locomotive'].order = "a"
 data.raw['item-with-entity-data']['cargo-wagon'].subgroup = "electric-transport-cargo"
@@ -137,3 +143,8 @@ end
 --		end
 --	end
 --end
+
+------------------------------------------------------------------------
+
+---@diagnostic disable-next-line: undefined-field
+Framework.post_data_updates_stage()
