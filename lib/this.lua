@@ -2,22 +2,26 @@
 --- Initialize this mod's globals
 ----------------------------------------------------------------------------------------------------
 
----@class lse.Mod
+-- must be before any other code
+Framework.settings:add_defaults(require('lib.settings'))
+
+---@class elok.Mod
 ---@field other_mods table<string, string>
----@field Lse lse.Lse?
----@field Elevator lse.SpaceElevator?
----@field Gui lse.Gui?
+---@field remote_apis table<string, string>
+---@field Locomotive elok.LocomotiveControl
+---@field ControlStation elok.ControlStation
 local This = {
     other_mods = {
-        LogisticTrainNetwork = 'ltn',
-        ['space-exploration'] = 'se',
+    },
+    remote_apis = {
+        FuelTrainStop = 'exclude-from-refuel',
+        ['logistic-train-network'] = 'exclude-from-refuel',
     },
 }
 
 if (script) then
-    This.Lse = require('scripts.lse')
-    This.Elevator = require('scripts.elevator')
-    This.Gui = require('scripts.gui')
+    This.Locomotive = require('scripts.locomotive')
+    This.ControlStation = require('scripts.control-station')
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -28,12 +32,15 @@ end
 
 --- Setup the global data structures
 function This:init()
-    if storage.lse_data then return end
+    assert(script)
 
-    ---@type lse.Storage
-    storage.lse_data = {
-        known_stops = {},
-        elevators = {},
+    if storage.elok_data then return end
+
+    ---@type elok.Storage
+    storage.elok_data = {
+        total_engine_count = 0,
+        total_control_station_count = 0,
+        surfaces = {},
     }
 end
 
@@ -41,11 +48,20 @@ end
 -- Storage Management
 ------------------------------------------------------------------------
 
----@return lse.Storage
+---@return elok.Storage
 function This:storage()
-    return assert(storage.lse_data)
+    return assert(storage.elok_data)
 end
 
-Framework.settings:add_defaults(require('lib.settings'))
+function This:locateSurface(surface_index)
+    local elok_storage = self:storage()
+
+    elok_storage.surfaces[surface_index] = elok_storage.surfaces[surface_index] or {
+        engines = {},
+        power_sources = {},
+    }
+
+    return elok_storage.surfaces[surface_index]
+end
 
 return This

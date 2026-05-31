@@ -63,14 +63,66 @@ end
 -- Base name
 Constants.elok_name = Constants:with_prefix(Constants.name)
 
+Constants.locomotive_names = {
+    'et-electric-locomotive-1',
+    'et-electric-locomotive-2',
+    'et-electric-locomotive-3',
+}
+
+Constants.cargo_wagon_names = {
+    'et-cargo-wagon-1',
+    'et-cargo-wagon-2',
+    'et-cargo-wagon-3',
+}
+
+Constants.fluid_wagon_names = {
+    'et-fluid-wagon-1',
+    'et-fluid-wagon-2',
+    'et-fluid-wagon-3',
+}
+
+Constants.tier_multipliers = {
+    1, 1.5, 2
+}
+
+Constants.tier_tint = {
+    { 0.7, 0.3, 0.3, 1},
+    { 0.7, 0.7, 0.3, 1},
+    { 0.3, 0.7, 0.3, 1},
+}
+
+Constants.fuel_names = {
+    'et-electric-fuel-1',
+    'et-electric-fuel-2',
+    'et-electric-fuel-3',
+}
+
+Constants.technology_names = {
+    'et-electric-railway-1',
+    'et-electric-railway-2',
+    'et-electric-railway-3',
+    'et-cargo-wagon-2',
+    'et-cargo-wagon-3',
+    'et-fluid-wagon-2',
+    'et-fluid-wagon-3',
+}
+
+Constants.control_station_names = {
+    'et-control-station-1',
+    'et-control-station-2',
+    'et-control-station-3',
+}
+
 --------------------------------------------------------------------------------
 -- settings
 --------------------------------------------------------------------------------
 
 Constants.settings_keys = {
-    'mk_train',
-    'mk_cargo',
-    'mk_fluid',
+    'enable_train',
+    'enable_cargo',
+    'enable_fluid',
+    'show_icons',
+    'tick_interval',
 }
 
 Constants.settings_names = {}
