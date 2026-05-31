@@ -12,6 +12,8 @@ Framework.settings:add_defaults(require('lib.settings'))
 ---@field ControlStation elok.ControlStation
 local This = {
     other_mods = {
+        ['reverse-factory'] = 'reverse-factory',
+
     },
     remote_apis = {
         FuelTrainStop = 'exclude-from-refuel',
