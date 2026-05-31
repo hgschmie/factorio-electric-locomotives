@@ -34,7 +34,8 @@ end
 ---@field tombstone framework.tombstone_manager?
 ---@field translation_manager framework.translation.Manager?
 ---@field other_mods framework.OtherModsManager
----@field remote_api table<string, function>?
+---@field remote_apis framework.RemoteApisManager
+---@field exported_apis table<string, function>?
 ---@field render FrameworkRender?
 Framework = {
     --- The non-localised prefix (textual ID) of this mod.
@@ -70,7 +71,7 @@ Framework = {
 
     tombstone = nil,
 
-    remote_api = nil,
+    exported_apis = nil,
 
     render = nil,
 }
@@ -110,9 +111,9 @@ function Framework:init_runtime(config)
 
     self.render = self.render or require('framework.render')
 
-    if config.remote_name and not self.remote_api then
-        self.remote_api = {}
-        remote.add_interface(config.remote_name, self.remote_api)
+    if config.remote_name and not self.exported_apis then
+        self.exported_apis = {}
+        remote.add_interface(config.remote_name, self.exported_apis)
     end
 
     local Event = require('stdlib.event.event')
@@ -144,6 +145,7 @@ function Framework:init(config)
     self.settings = self.settings or require('framework.settings') --[[ @as FrameworkSettings ]]
     self.logger = self.logger or require('framework.logger') --[[ @as FrameworkLogger ]]
     self.other_mods = self.other_mods or require('framework.other-mods')
+    self.remote_apis = self.remote_apis or require('framework.remote-apis')
 
     if data and data.raw['gui-style'] then
         -- data stage
@@ -171,6 +173,7 @@ for _, game_stage in pairs(game_stages) do
     prototype['post_' .. game_stage .. '_stage'] = function()
         -- otherwise, it is an stage method, pass it to the submodules
         Framework.other_mods[game_stage]() -- other-mods subsystem
+        Framework.remote_apis[game_stage]() -- remote-apis subsystem
     end
 end
 
