@@ -57,63 +57,6 @@ function Constants:locale(id)
 end
 
 --------------------------------------------------------------------------------
--- entity names and maps
---------------------------------------------------------------------------------
-
--- Base name
-Constants.elok_name = Constants:with_prefix(Constants.name)
-
-Constants.locomotive_names = {
-    'et-electric-locomotive-1',
-    'et-electric-locomotive-2',
-    'et-electric-locomotive-3',
-}
-
-Constants.cargo_wagon_names = {
-    'et-cargo-wagon-1',
-    'et-cargo-wagon-2',
-    'et-cargo-wagon-3',
-}
-
-Constants.fluid_wagon_names = {
-    'et-fluid-wagon-1',
-    'et-fluid-wagon-2',
-    'et-fluid-wagon-3',
-}
-
-Constants.tier_multipliers = {
-    1, 1.5, 2
-}
-
-Constants.tier_tint = {
-    { 0.7, 0.3, 0.3, 1},
-    { 0.7, 0.7, 0.3, 1},
-    { 0.3, 0.7, 0.3, 1},
-}
-
-Constants.fuel_names = {
-    'et-electric-fuel-1',
-    'et-electric-fuel-2',
-    'et-electric-fuel-3',
-}
-
-Constants.technology_names = {
-    'et-electric-railway-1',
-    'et-electric-railway-2',
-    'et-electric-railway-3',
-    'et-cargo-wagon-2',
-    'et-cargo-wagon-3',
-    'et-fluid-wagon-2',
-    'et-fluid-wagon-3',
-}
-
-Constants.control_station_names = {
-    'et-control-station-1',
-    'et-control-station-2',
-    'et-control-station-3',
-}
-
---------------------------------------------------------------------------------
 -- settings
 --------------------------------------------------------------------------------
 
@@ -123,6 +66,7 @@ Constants.settings_keys = {
     'enable_fluid',
     'show_icons',
     'tick_interval',
+    'engines_per_control_station',
 }
 
 Constants.settings_names = {}
@@ -132,5 +76,101 @@ for _, key in pairs(Constants.settings_keys) do
     Constants.settings_names[key] = key
     Constants.settings[key] = Constants:with_prefix(key)
 end
+
+--------------------------------------------------------------------------------
+-- entity names and maps
+--------------------------------------------------------------------------------
+
+-- Base name
+Constants.elok_name = Constants:with_prefix(Constants.name)
+
+Constants.locomotive_prefix = 'et-electric-locomotive-'
+Constants.cargo_wagon_prefix = 'et-cargo-wagon-'
+Constants.fluid_wagon_prefix = 'et-fluid-wagon-'
+Constants.control_station_prefix = 'et-control-station-'
+Constants.fuel_prefix = 'et-electric-fuel-'
+Constants.technology_prefix = 'et-electric-railway-'
+
+local locomotive_names, cargo_wagon_names, fluid_wagon_names
+
+local cache = {}
+
+---@class elok.MakeNamesArgs
+---@field name string
+---@field default string[]?
+---@field advanced string[]?
+---@field enable_advanced fun(): boolean
+
+---@param args elok.MakeNamesArgs
+local function make_names(args)
+    args.advanced = args.advanced or { '2', '3' }
+    args.default = args.default or { '1' }
+
+    return function()
+        if cache[args.name] then return cache[args.name] end
+
+        local prefix = assert(Constants[args.name .. '_prefix'])
+        local names = {}
+
+        for _, tier in pairs(args.default) do
+            names[#names + 1] = prefix .. tier
+        end
+
+        if args.enable_advanced() then
+            for _, tier in pairs(args.advanced) do
+                names[#names + 1] = prefix .. tier
+            end
+        end
+
+        cache[args.name] = names
+        return names
+    end
+end
+
+if script then
+    -- methods are only available at runtime as the values are
+    -- controlled by enabled technologies etc.
+
+    Constants.getLocomotiveNames = make_names {
+        name = 'locomotive',
+        enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_train) end,
+    }
+
+    Constants.getControlStationNames = make_names {
+        name = 'control_station',
+        enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_train) end,
+    }
+
+    Constants.getCargoWagonNames = make_names {
+        name = 'cargo_wagon',
+        default = {},
+        enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_cargo) end,
+    }
+
+    Constants.getFluidWagonNames = make_names {
+        name = 'fluid_wagon',
+        default = {},
+        enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_fluid) end,
+    }
+
+    Constants.getTechnologyNames = make_names {
+        name = 'technology',
+        enable_advanced = function()
+            return Framework.settings:startup_setting(Constants.settings_names.enable_train)
+                or Framework.settings:startup_setting(Constants.settings_names.enable_cargo)
+                or Framework.settings:startup_setting(Constants.settings_names.enable_fluid)
+        end,
+    }
+end
+
+Constants.tier_multipliers = {
+    1, 1.5, 2,
+}
+
+Constants.tier_tint = {
+    { 0.7, 0.3, 0.3, 1 },
+    { 0.7, 0.7, 0.3, 1 },
+    { 0.3, 0.7, 0.3, 1 },
+}
 
 return Constants

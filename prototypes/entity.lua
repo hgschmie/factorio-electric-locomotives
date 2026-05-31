@@ -20,17 +20,19 @@ local MAX_POWER = locomotive.max_power:sub(locomotive.max_power:find('%d+'))
 local TICK_FACTOR = Framework.settings:startup_setting(const.settings_names.tick_interval)
 
 -- how many locos should a control station support at full load
-local LOCOS_PER_TIER = 20
+local LOCOS_PER_TIER = Framework.settings:startup_setting(const.settings_names.engines_per_control_station)
 
 -- at full acceleration, a base loco pulls 600kW, which is 10kJ/tick
 loco_consumption_per_tick = MAX_POWER / 60 -- global to use in items
+
+local Entity = {}
 
 local function make_engine(index)
 	local factor = const.tier_multipliers[index]
 
 	return meld(util.copy(locomotive), {
 		-- Prototype Base
-		name = const.locomotive_names[index],
+		name = const.locomotive_prefix .. index,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -40,10 +42,10 @@ local function make_engine(index)
 				icon = const:png('item/locomotive'),
 				icon_size = 64,
 				tint = const.tier_tint[index],
-			}
+			},
 		},
 		minable = {
-			result = const.locomotive_names[index],
+			result = const.locomotive_prefix .. index,
 		},
 		fast_replaceable_group = const:with_prefix('e-locomotive'),
 
@@ -84,7 +86,6 @@ local function make_engine(index)
 	})
 end
 
-
 -- at full acceleration, a type 1 loco pulls 600kW, which is 10kJ/tick
 -- a power station should be able to support 20 type 1 locomotives
 --
@@ -108,7 +109,7 @@ local function make_control_station(index)
 	return {
 		-- Prototype Base
 		type = 'electric-energy-interface',
-		name = const.control_station_names[index],
+		name = const.control_station_prefix .. index,
 
 		-- ElectricEnergyInterfacePrototype
 		energy_source = {
@@ -179,7 +180,7 @@ local function make_control_station(index)
 
 		minable = {
 			mining_time = 1,
-			result = const.control_station_names[index],
+			result = const.control_station_prefix .. index,
 		},
 	}
 end
@@ -189,7 +190,7 @@ local function make_cargo_wagon(index)
 
 	return meld(util.copy(cargo_wagon), {
 		-- Prototype Base
-		name = const.cargo_wagon_names[index],
+		name = const.cargo_wagon_prefix .. index,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -202,7 +203,7 @@ local function make_cargo_wagon(index)
 			},
 		},
 		minable = {
-			result = const.cargo_wagon_names[index],
+			result = const.cargo_wagon_prefix .. index,
 		},
 
 		-- EntityWithHealthPrototype
@@ -228,7 +229,7 @@ local function make_fluid_wagon(index)
 
 	return meld(util.copy(fluid_wagon), {
 		-- Prototype Base
-		name = const.fluid_wagon_names[index],
+		name = const.fluid_wagon_prefix .. index,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -241,7 +242,7 @@ local function make_fluid_wagon(index)
 			},
 		},
 		minable = {
-			result = const.fluid_wagon_names[index],
+			result = const.fluid_wagon_prefix .. index,
 		},
 
 		-- EntityWithHealthPrototype
@@ -262,24 +263,38 @@ local function make_fluid_wagon(index)
 	})
 end
 
-data:extend {
-	make_engine(1),
-	make_engine(2),
-	make_engine(3),
-}
+function Entity:defaultEntities()
+	data:extend {
+		make_engine(1),
+		make_control_station(1),
+	}
+end
 
-data:extend {
-	make_control_station(1),
-	make_control_station(2),
-	make_control_station(3),
-}
+function Entity:makeAdvancedEngines()
+	data:extend {
+		make_engine(2),
+		make_control_station(2),
 
-data:extend {
-	make_cargo_wagon(2),
-	make_cargo_wagon(3),
-	make_fluid_wagon(2),
-	make_fluid_wagon(3),
-}
+		make_engine(3),
+		make_control_station(3),
+	}
+end
+
+function Entity:makeCargoWagons()
+	data:extend {
+		make_cargo_wagon(2),
+		make_cargo_wagon(3),
+	}
+end
+
+function Entity:makeFluidWagons()
+	data:extend {
+		make_fluid_wagon(2),
+		make_fluid_wagon(3),
+	}
+end
+
+return Entity
 
 -- function format_number(number_string)
 -- 	local number = number_string:match('%d+%.?%d+')
@@ -350,9 +365,9 @@ data:extend {
 -- 	})
 -- end
 
--- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[1]])	
--- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[2]])
--- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[3]])
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_prefix .. '1'])	
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_prefix .. '2'])
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_prefix .. '3'])
 
 -- function InsertMUControl(name)
 -- 	data:extend(
@@ -387,7 +402,7 @@ data:extend {
 -- end
 
 -- if mods['MultipleUnitTrainControl'] then
--- 	InsertMUControl("const.locomotive_names[1]-mu")
+-- 	InsertMUControl("const.locomotive_prefix .. '1'-mu")
 -- 	InsertMUControl("et-electric-locomotive-2-mu")
 -- 	InsertMUControl("et-electric-locomotive-3-mu")
 -- end

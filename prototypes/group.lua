@@ -5,7 +5,7 @@
 data:extend {
 	{
 		type = 'item-subgroup',
-		name = 'electric-transport',
+		name = 'electric-railway',
 		group = 'logistics',
 		order = 'ee',
 	},

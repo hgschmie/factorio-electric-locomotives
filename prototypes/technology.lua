@@ -4,21 +4,21 @@
 
 local const = require('lib.constants')
 
-local Technology = {}
-function Technology:defaultTechnology()
-	local electric_railway_1 = {
+local electric_railway = {
+	-- Tier 1
+	{
 		type = 'technology',
-		name = const.technology_names[1],
+		name = const.technology_prefix .. '1',
 		icon = const:png('technology/electric-railway'),
 		icon_size = 256,
 		effects = {
 			{
 				type = 'unlock-recipe',
-				recipe = const.locomotive_names[1],
+				recipe = const.locomotive_prefix .. '1',
 			},
 			{
 				type = 'unlock-recipe',
-				recipe = const.control_station_names[1],
+				recipe = const.control_station_prefix .. '1',
 			},
 			{
 				type = 'unlock-recipe',
@@ -40,26 +40,15 @@ function Technology:defaultTechnology()
 			time = 30,
 		},
 		order = 'c-g-a-a',
-	}
-
-	data:extend {
-		electric_railway_1,
-	}
-end
-
-function Technology:unlockTrainTechnology()
-	local electric_railway_2 = {
+	},
+	-- Tier 2
+	{
 		type = 'technology',
-		name = const.technology_names[2],
+		name = const.technology_prefix .. '2',
 		icon_size = 256,
 		icon = const:png('technology/electric-railway'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.locomotive_names[2],
-			},
-		},
-		prerequisites = { const.technology_names[1] },
+		effects = {},
+		prerequisites = { const.technology_prefix .. '1', 'chemical-science-pack' },
 		unit = {
 			count = 300,
 			ingredients = {
@@ -70,20 +59,15 @@ function Technology:unlockTrainTechnology()
 			time = 30,
 		},
 		order = 'c-g-a-a-a-b',
-	}
-
-	local electric_railway_3 = {
+	},
+	-- Tier 3
+	{
 		type = 'technology',
-		name = const.technology_names[3],
+		name = const.technology_prefix .. '3',
 		icon_size = 256,
 		icon = const:png('technology/electric-railway'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.locomotive_names[3],
-			},
-		},
-		prerequisites = { const.technology_names[2], 'utility-science-pack' },
+		effects = {},
+		prerequisites = { const.technology_prefix .. '2', 'utility-science-pack' },
 		unit = {
 			count = 300,
 			ingredients = {
@@ -95,124 +79,54 @@ function Technology:unlockTrainTechnology()
 			time = 30,
 		},
 		order = 'c-g-a-a-a-c',
-	}
+	},
+}
+
+local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
+local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo)
+local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid)
+
+for idx = 2, 3 do
+	local effects = electric_railway[idx].effects
+
+	if mk_engines then
+		effects[#effects + 1] = {
+			type = 'unlock-recipe',
+			recipe = const.locomotive_prefix .. idx,
+		}
+		effects[#effects + 1] = {
+			type = 'unlock-recipe',
+			recipe = const.control_station_prefix .. idx,
+		}
+	end
+
+	if mk_cargo then
+		effects[#effects + 1] = {
+			type = 'unlock-recipe',
+			recipe = const.cargo_wagon_prefix .. idx,
+		}
+	end
+
+	if mk_fluid then
+		effects[#effects + 1] = {
+			type = 'unlock-recipe',
+			recipe = const.fluid_wagon_prefix .. idx,
+		}
+	end
+end
+
+local Technology = {}
+
+function Technology:defaultTechnology()
 	data:extend {
-		electric_railway_2,
-		electric_railway_3,
+		electric_railway[1],
 	}
 end
 
-function Technology:unlockCargoTechnology()
-	local cargo_wagon_2 = {
-		type = 'technology',
-		name = const.technology_names[4],
-		icon_size = 64,
-		icon = const:png('item/cargo-wagon'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.technology_names[4],
-			},
-		},
-		prerequisites = { 'railway', 'low-density-structure' },
-		unit =
-		{
-			count = 50,
-			ingredients = {
-				{ 'automation-science-pack', 3 },
-				{ 'logistic-science-pack', 2 },
-				{ 'chemical-science-pack', 1 },
-			},
-			time = 30,
-		},
-		order = 'c-g-a-a-c',
-	}
-
-	local cargo_wagon_3 = {
-		type = 'technology',
-		name = const.technology_names[5],
-		icon_size = 64,
-		icon = const:png('item/cargo-wagon'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.technology_names[5],
-			},
-		},
-		prerequisites = { const.technology_names[4], 'utility-science-pack' },
-		unit = {
-			count = 100,
-			ingredients =
-			{
-				{ 'automation-science-pack', 4 },
-				{ 'logistic-science-pack', 3 },
-				{ 'chemical-science-pack', 2 },
-				{ 'utility-science-pack', 1 },
-			},
-			time = 30,
-		},
-		order = 'c-g-a-a-c-b',
-	}
-
+function Technology:unlockAdvancedTiers()
 	data:extend {
-		cargo_wagon_2,
-		cargo_wagon_3,
-	}
-end
-
-function Technology:unlockFluidTechnology()
-	local fluid_wagon_2 = {
-		type = 'technology',
-		name = const.technology_names[6],
-		icon_size = 64,
-		icon = const:png('item/fluid-wagon'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.technology_names[6],
-			},
-		},
-		prerequisites = { 'fluid-wagon', 'low-density-structure' },
-		unit = {
-			count = 50,
-			ingredients = {
-				{ 'automation-science-pack', 3 },
-				{ 'logistic-science-pack', 2 },
-				{ 'chemical-science-pack', 1 },
-			},
-			time = 30,
-		},
-		order = 'c-g-a-b-b',
-	}
-
-	local fluid_wagon_3 = {
-		type = 'technology',
-		name = const.technology_names[7],
-		icon_size = 64,
-		icon = const:png('item/fluid-wagon'),
-		effects = {
-			{
-				type = 'unlock-recipe',
-				recipe = const.technology_names[7],
-			},
-		},
-		prerequisites = { const.technology_names[6], 'utility-science-pack' },
-		unit = {
-			count = 100,
-			ingredients = {
-				{ 'automation-science-pack', 4 },
-				{ 'logistic-science-pack', 3 },
-				{ 'chemical-science-pack', 2 },
-				{ 'utility-science-pack', 1 },
-			},
-			time = 30,
-		},
-		order = 'c-g-a-b-c',
-	}
-
-	data:extend {
-		fluid_wagon_2,
-		fluid_wagon_3,
+		electric_railway[2],
+		electric_railway[3],
 	}
 end
 

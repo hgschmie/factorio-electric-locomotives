@@ -25,7 +25,11 @@ local Settings = {
         },
         [const.settings_names.tick_interval] = {
             key = const.settings.tick_interval,
-            value = true
+            value = 5
+        },
+        [const.settings_names.engines_per_control_station] = {
+            key = const.settings.engines_per_control_station,
+            value = 20
         },
     }
 }

@@ -53,7 +53,7 @@ function Locomotive:createLocomotive(entity)
     local engine_tier = tonumber(entity.name:sub(entity.name:find('%d')))
 
     -- assign the right fuel
-    entity.burner.currently_burning = assert(prototypes.item[const.fuel_names[engine_tier]])
+    entity.burner.currently_burning = assert(prototypes.item[const.fuel_prefix .. engine_tier])
 
     ---@type elok.Engine
     local engine = {

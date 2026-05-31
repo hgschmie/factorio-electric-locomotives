@@ -52,6 +52,15 @@ data:extend {
 		maximum_value = 60,
 		order = 'ae',
 	},
+	{
+		type = 'int-setting',
+		name = const.settings.engines_per_control_station,
+		setting_type = 'startup',
+		default_value = 20,
+		minimum_value = 2,
+		maximum_value = 1000,
+		order = 'af',
+	},
 }
 
 ------------------------------------------------------------------------

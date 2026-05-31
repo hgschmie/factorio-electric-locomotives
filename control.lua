@@ -57,7 +57,7 @@ local function resync_state()
 	for _, surface in pairs(game.surfaces) do
 		local control_stations = surface.find_entities_filtered {
 			type = 'electric-energy-interface',
-			name = const.control_station_names,
+			name = const.getControlStationNames(),
 		}
 
 		-- register the control stations
@@ -69,7 +69,7 @@ local function resync_state()
 
 		local engines = surface.find_entities_filtered {
 			type = 'locomotive',
-			name = const.locomotive_names,
+			name = const.getLocomotiveNames(),
 		}
 
 		-- load up the locomotive
@@ -103,7 +103,7 @@ local function on_configuration_changed()
 
 	-- unlock all known / relevant technologies
 	for _, force in pairs(game.forces) do
-		for _, technology_name in pairs(const.technology_names) do
+		for _, technology_name in pairs(const.getTechnologyNames()) do
 			local technology = force.technologies[technology_name]
 			if (technology and technology.enabled and technology.researched) then
 				for _, modifier in pairs(technology.prototype.effects) do
@@ -135,11 +135,11 @@ local function register_events()
 	-- Configuration changes (startup)
 	Event.on_configuration_changed(on_configuration_changed)
 
-	Event.register(Matchers.CREATION_EVENTS, on_locomotive_created, Matchers:matchEventEntityName(const.locomotive_names))
-	Event.register(Matchers.CREATION_EVENTS, on_control_station_created, Matchers:matchEventEntityName(const.control_station_names))
+	Event.register(Matchers.CREATION_EVENTS, on_locomotive_created, Matchers:matchEventEntityName(const.getLocomotiveNames()))
+	Event.register(Matchers.CREATION_EVENTS, on_control_station_created, Matchers:matchEventEntityName(const.getControlStationNames()))
 
-	Event.register(Matchers.DELETION_EVENTS, on_locomotive_removed, Matchers:matchEventEntityName(const.locomotive_names))
-	Event.register(Matchers.DELETION_EVENTS, on_control_station_removed, Matchers:matchEventEntityName(const.control_station_names))
+	Event.register(Matchers.DELETION_EVENTS, on_locomotive_removed, Matchers:matchEventEntityName(const.getLocomotiveNames()))
+	Event.register(Matchers.DELETION_EVENTS, on_control_station_removed, Matchers:matchEventEntityName(const.getControlStationNames()))
 
 	Event.register({ defines.events.on_surface_cleared, defines.events.on_surface_deleted }, on_surface_cleared)
 

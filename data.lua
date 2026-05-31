@@ -4,17 +4,46 @@
 
 require('lib.init')
 
+local const = require('lib.constants')
+
 require('prototypes.group')
 -- entities must come before item because the loco consumption
 -- is used by the fuel item definition
-require('prototypes.entity')
-require('prototypes.item')
+local entity = require('prototypes.entity')
+local item = require('prototypes.item')
 local recipes = require('prototypes.recipe')
-recipes:defaultRecipes()
-
 local technology = require('prototypes.technology')
+
+entity:defaultEntities()
+item:defaultEntities()
+recipes:defaultRecipes()
 technology:defaultTechnology()
 
+local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
+local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo)
+local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid)
+
+if mk_engines then
+    entity:makeAdvancedEngines()
+    item:makeAdvancedEngines()
+    recipes:unlockAdvancedEngines()
+end
+
+if mk_cargo then
+    entity:makeCargoWagons()
+    item:makeCargoWagons()
+    recipes:unlockCargoWagons()
+end
+
+if mk_fluid then
+    entity:makeFluidWagons()
+    item:makeFluidWagons()
+    recipes:unlockFluidWagons()
+end
+
+if mk_engines or mk_cargo or mk_fluid then
+    technology:unlockAdvancedTiers()
+end
 
 ------------------------------------------------------------------------
 
