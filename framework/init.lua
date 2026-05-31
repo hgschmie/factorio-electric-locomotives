@@ -7,6 +7,12 @@
 
 local Is = require('stdlib.utils.is')
 
+local ticker
+if script then
+    ticker = require('framework.ticker')
+end
+
+
 ----------------------------------------------------------------------------------------------------
 
 --- Framework central access point
@@ -69,6 +75,17 @@ Framework = {
     render = nil,
 }
 
+local function on_init()
+    assert(ticker).init()
+end
+
+local function on_load()
+end
+
+local function on_configuration_changed()
+    assert(ticker).init()
+end
+
 --- called in runtime stage
 ---@param config FrameworkConfig
 function Framework:init_runtime(config)
@@ -97,6 +114,12 @@ function Framework:init_runtime(config)
         self.remote_api = {}
         remote.add_interface(config.remote_name, self.remote_api)
     end
+
+    local Event = require('stdlib.event.event')
+
+    Event.on_init(on_init)
+    Event.on_load(on_load)
+    Event.on_configuration_changed(on_configuration_changed)
 end
 
 --- Initialize the core framework.
