@@ -7,16 +7,24 @@ local const = require('lib.constants')
 ---@type table<FrameworkSettings.name, FrameworkSettingsGroup>
 local Settings = {
     startup = {
-        [const.settings_names.mk_train] = {
-            key = const.settings.mk_train,
+        [const.settings_names.enable_train] = {
+            key = const.settings.enable_train,
             value = true
         },
-        [const.settings_names.mk_cargo] = {
-            key = const.settings.mk_cargo,
+        [const.settings_names.enable_cargo] = {
+            key = const.settings.enable_cargo,
             value = true
         },
-        [const.settings_names.mk_fluid] = {
-            key = const.settings.mk_fluid,
+        [const.settings_names.enable_fluid] = {
+            key = const.settings.enable_fluid,
+            value = true
+        },
+        [const.settings_names.show_icons] = {
+            key = const.settings.show_icons,
+            value = true
+        },
+        [const.settings_names.tick_interval] = {
+            key = const.settings.tick_interval,
             value = true
         },
     }
