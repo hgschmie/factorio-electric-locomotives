@@ -1,126 +1,157 @@
-local electric_locomotive_1 = table.deepcopy(data.raw['item-with-entity-data']['locomotive'])
-electric_locomotive_1.name = "et-electric-locomotive-1"
-electric_locomotive_1.icon = "__ElectricTrain2__/graphics/loc1.png"
-electric_locomotive_1.subgroup = "electric-transport-loc"
-electric_locomotive_1.order = "b"
-electric_locomotive_1.place_result = "et-electric-locomotive-1"
-electric_locomotive_1.icon_size = 32
-electric_locomotive_1.icon_mipmaps = nil
+------------------------------------------------------------------------
+-- items
+------------------------------------------------------------------------
 
-local electric_locomotive_2 = table.deepcopy(data.raw['item-with-entity-data']['locomotive'])
-electric_locomotive_2.name = "et-electric-locomotive-2"
-electric_locomotive_2.icon = "__ElectricTrain2__/graphics/loc2.png"
-electric_locomotive_2.subgroup = "electric-transport-loc"
-electric_locomotive_2.order = "c"
-electric_locomotive_2.place_result = "et-electric-locomotive-2"
-electric_locomotive_2.icon_size = 32
-electric_locomotive_2.icon_mipmaps = nil
+local util = require('util')
+local meld = require('meld')
 
-local electric_locomotive_3 = table.deepcopy(data.raw['item-with-entity-data']['locomotive'])
-electric_locomotive_3.name = "et-electric-locomotive-3"
-electric_locomotive_3.icon = "__ElectricTrain2__/graphics/loc3.png"
-electric_locomotive_3.subgroup = "electric-transport-loc"
-electric_locomotive_3.order = "d"
-electric_locomotive_3.place_result = "et-electric-locomotive-3"
-electric_locomotive_3.icon_size = 32
-electric_locomotive_3.icon_mipmaps = nil
+local const = require('lib.constants')
 
-data:extend({electric_locomotive_1,electric_locomotive_2,electric_locomotive_3})
+local locomotive = data.raw['item-with-entity-data']['locomotive']
 
+local function make_engine(index)
+	return meld(util.copy(locomotive), {
+		name = const.locomotive_names[index],
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
+			{
+				icon = const:png('item/locomotive'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
+			}
+		},
+		subgroup = 'train-transport',
+		order = 'c[rolling-stock]-a[locomotive]-' .. index,
+		place_result = const.locomotive_names[index],
+	})
+end
 
-local cargo_wagon_2 = table.deepcopy(data.raw['item-with-entity-data']['cargo-wagon'])
-cargo_wagon_2.name = "et-cargo-wagon-2"
-cargo_wagon_2.icon = "__ElectricTrain2__/graphics/cargo2.png"
-cargo_wagon_2.subgroup = "electric-transport-cargo"
-cargo_wagon_2.order = "b"
-cargo_wagon_2.place_result = "et-cargo-wagon-2"
-cargo_wagon_2.icon_size = 32
-cargo_wagon_2.icon_mipmaps = nil
+data:extend {
+	make_engine(1),
+	make_engine(2),
+	make_engine(3),
+}
 
-local cargo_wagon_3 = table.deepcopy(data.raw['item-with-entity-data']['cargo-wagon'])
-cargo_wagon_3.name = "et-cargo-wagon-3"
-cargo_wagon_3.icon = "__ElectricTrain2__/graphics/cargo3.png"
-cargo_wagon_3.subgroup = "electric-transport-cargo"
-cargo_wagon_3.order = "c"
-cargo_wagon_3.place_result = "et-cargo-wagon-3"
-cargo_wagon_3.icon_size = 32
-cargo_wagon_3.icon_mipmaps = nil
+local cargo_wagon = data.raw['item-with-entity-data']['cargo-wagon']
+local fluid_wagon = data.raw['item-with-entity-data']['fluid-wagon']
 
-data:extend({cargo_wagon_2,cargo_wagon_3})	
+local function make_cargo_wagon(index)
+	return meld(util.copy(cargo_wagon), {
+		name = const.cargo_wagon_names[index],
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
+			{
+				icon = const:png('item/cargo-wagon'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
+			}
+		},
+		subgroup = 'train-transport',
+		order = 'c[rolling-stock]-b[cargo-wagon]-' .. index,
+		place_result = const.cargo_wagon_names[index],
+	})
+end
 
+local function make_fluid_wagon(index)
+	return meld(util.copy(fluid_wagon), {
+		name = const.fluid_wagon_names[index],
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
+			{
+				icon = const:png('item/fluid-wagon'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
+			},
+		},
+		subgroup = 'train-transport',
+		order = 'c[rolling-stock]-c[fluid-wagon]-' .. index,
+		place_result = const.fluid_wagon_names[index],
+	})
+end
 
-local fluid_wagon_2 = table.deepcopy(data.raw['item-with-entity-data']['fluid-wagon'])
-fluid_wagon_2.name = "et-fluid-wagon-2"
-fluid_wagon_2.icon = "__ElectricTrain2__/graphics/fluid2.png"
-fluid_wagon_2.subgroup = "electric-transport-fluid"
-fluid_wagon_2.order = "b"
-fluid_wagon_2.place_result = "et-fluid-wagon-2"
-fluid_wagon_2.icon_size = 32
-fluid_wagon_2.icon_mipmaps = nil
+data:extend {
+	make_cargo_wagon(2),
+	make_cargo_wagon(3),
+	make_fluid_wagon(2),
+	make_fluid_wagon(3),
+}
 
-local fluid_wagon_3 = table.deepcopy(data.raw['item-with-entity-data']['fluid-wagon'])
-fluid_wagon_3.name = "et-fluid-wagon-3"
-fluid_wagon_3.icon = "__ElectricTrain2__/graphics/fluid3.png"
-fluid_wagon_3.subgroup = "electric-transport-fluid"
-fluid_wagon_3.order = "c"
-fluid_wagon_3.place_result = "et-fluid-wagon-3"
-fluid_wagon_3.icon_size = 32
-fluid_wagon_3.icon_mipmaps = nil
+local et_fuel_category = {
+	--- PrototypeBase
+	type = 'fuel-category',
+	name = 'et-electric-fuel',
+	hidden = true,
+	hidden_in_factoriopedia = true,
+}
 
-data:extend({fluid_wagon_2,fluid_wagon_3})
+local current_collector = {
+	type = 'item',
+	name = 'et-current-collector',
+	icon = const:png('item/current-collector-icon'),
+	icon_size = 32,
+	subgroup = 'electric-transport',
+	order = 'a[electric-transport]-b[et-current-collector]-1',
+	stack_size = 200,
+}
 
+data:extend {
+	et_fuel_category,
+	current_collector,
+}
 
-data:extend(
-{
-	{
-		type = "item",
-		name = "et-electric-locomotive-fuel",
-		icon = "__base__/graphics/icons/wood.png",
-		icon_size = 32,
+-- At full acceleration, a type 1 loco burns 10kJ per tick
+-- a fuel item lasts ~ 20 ticks before refuel, so if it runs out of
+-- fuel, it will decelerate and stop within 1/3 of a second.
+
+local ticks_per_fuel = 20
+
+local function make_fuel(index)
+	local factor = const.tier_multipliers[index]
+
+	---@type data.ItemPrototype
+	return {
+		--- PrototypeBase
+		type = 'item',
+		name = const.fuel_names[index],
 		hidden = true,
-		fuel_value = "200kJ",
-		fuel_category = "chemical",
-		stack_size = 1
+		hidden_in_factoriopedia = true,
+
+		--- ItemPrototype
+		stack_size = 1,
+		icon = const:png('item/part-electronic-transformer-1'),
+		icon_size = 64,
+		fuel_category = 'et-electric-fuel',
+		flags = {
+			'hide-from-bonus-gui',
+			'hide-from-fuel-tooltip',
+		},
+		fuel_value = (loco_consumption_per_tick * factor * ticks_per_fuel) .. 'kJ',
 	}
-})
+end
 
+data:extend {
+	make_fuel(1),
+	make_fuel(2),
+	make_fuel(3),
+}
 
-local control_station_1 = table.deepcopy(data.raw['item']['small-lamp'])
-control_station_1.name = "et-control-station-1"
-control_station_1.icon = "__ElectricTrain2__/graphics/relais-icon-1.png"
-control_station_1.subgroup = "electric-transport-basic"
-control_station_1.order = "b"
-control_station_1.place_result = "et-control-station-1"
-control_station_1.icon_size = 32
-control_station_1.icon_mipmaps = nil
+local function make_control_station(index)
+	return meld(util.copy(data.raw['item']['small-lamp']), {
+		type = 'item',
+		name = const.control_station_names[index],
+		icon = const:png('item/control-station-' .. index),
+		icon_size = 64,
+		subgroup = 'electric-transport',
+		order = 'a[electric-transport]-a[et-control-station]-' .. index,
+		place_result = const.control_station_names[index],
+	})
+end
 
-data:extend({control_station_1})
-
-
-data:extend(
-{
-	{
-		type = "item",
-		name = "et-current-collector",
-		icon = "__ElectricTrain2__/graphics/current-collector-icon.png",
-		icon_size = 32,
-		subgroup = "electric-transport-basic",
-		order = "a",
-		stack_size = 200
-	}
-})
-
-
-data:extend(
-{
-	{
-		type = "item",
-		name = "et-rocket-part",
-		icon = "__base__/graphics/icons/rocket-part.png",
-		icon_size = 32,
-		hidden = true,
-		subgroup = "intermediate-product",
-		order = "q[et-rocket-part]",
-		stack_size = 100
-	}
-})
+data:extend {
+	make_control_station(1),
+	make_control_station(2),
+	make_control_station(3),
+}

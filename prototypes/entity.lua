@@ -1,248 +1,393 @@
-local electric_locomotive_1 = table.deepcopy(data.raw['locomotive']['locomotive'])
-electric_locomotive_1.name = "et-electric-locomotive-1"
-electric_locomotive_1.icon = "__ElectricTrain2__/graphics/loc1.png"
-electric_locomotive_1.minable.result = "et-electric-locomotive-1"
-electric_locomotive_1.burner = {fuel_inventory_size = 0}
-electric_locomotive_1.icon_size = 32
-electric_locomotive_1.icon_mipmaps = nil
+------------------------------------------------------------------------
+-- entities
+------------------------------------------------------------------------
 
-local electric_locomotive_2 = table.deepcopy(data.raw['locomotive']['locomotive'])
-electric_locomotive_2.name = "et-electric-locomotive-2"
-electric_locomotive_2.icon = "__ElectricTrain2__/graphics/loc2.png"
-electric_locomotive_2.minable.result = "et-electric-locomotive-2"
-electric_locomotive_2.burner = {fuel_inventory_size = 0}
-electric_locomotive_2.max_health = 1350
-electric_locomotive_2.max_speed = 1.8		--216*1.8 = 388.8
-electric_locomotive_2.max_power = "900kW"
-electric_locomotive_2.reversing_power_modifier = 0.8
-electric_locomotive_2.braking_force = 15
-electric_locomotive_2.friction_force = 0.375
-electric_locomotive_2.air_resistance = 0.005625
-electric_locomotive_2.icon_size = 32
-electric_locomotive_2.icon_mipmaps = nil
+local sounds = require('__base__.prototypes.entity.sounds')
 
-local electric_locomotive_3 = table.deepcopy(data.raw['locomotive']['locomotive'])
-electric_locomotive_3.name = "et-electric-locomotive-3"
-electric_locomotive_3.icon = "__ElectricTrain2__/graphics/loc3.png"
-electric_locomotive_3.minable.result = "et-electric-locomotive-3"
-electric_locomotive_3.burner = {fuel_inventory_size = 0}
-electric_locomotive_3.max_health = 1700
-electric_locomotive_3.max_speed = 2.4		--216*2.4 = 518.4
-electric_locomotive_3.max_power = "1200kW"
-electric_locomotive_3.reversing_power_modifier = 1
-electric_locomotive_3.braking_force = 20
-electric_locomotive_3.friction_force = 0.25
-electric_locomotive_3.air_resistance = 0.00375
-electric_locomotive_3.icon_size = 32
-electric_locomotive_3.icon_mipmaps = nil
+local util = require('util')
+local meld = require('meld')
+local collision_mask_util = require('collision-mask-util')
 
-data:extend({electric_locomotive_1,electric_locomotive_2,electric_locomotive_3})
+local const = require('lib.constants')
 
+local cargo_wagon = data.raw['cargo-wagon']['cargo-wagon']
+local fluid_wagon = data.raw['fluid-wagon']['fluid-wagon']
 
-data:extend
-({
-	{
-		type = "electric-energy-interface",
-		name = "et-control-station-1",
-		icon = "__ElectricTrain2__/graphics/relais-icon-1.png",
-		icon_size = 32,
-		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 1, result = "et-control-station-1"},
-		max_health = 100,
-		corpse = "small-remnants",
-		collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
-		selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-		fast_replaceable_group = "electric-energy-interface",
-		vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-		energy_source =
-		{
-			type = "electric",
-			buffer_capacity = "200000W",
-			usage_priority = "secondary-input",
+local locomotive = data.raw['locomotive']['locomotive']
+local MAX_POWER = locomotive.max_power:sub(locomotive.max_power:find('%d+'))
+
+-- how many ticks must a control station support
+local TICK_FACTOR = Framework.settings:startup_setting(const.settings_names.tick_interval)
+
+-- how many locos should a control station support at full load
+local LOCOS_PER_TIER = 20
+
+-- at full acceleration, a base loco pulls 600kW, which is 10kJ/tick
+loco_consumption_per_tick = MAX_POWER / 60 -- global to use in items
+
+local function make_engine(index)
+	local factor = const.tier_multipliers[index]
+
+	return meld(util.copy(locomotive), {
+		-- Prototype Base
+		name = const.locomotive_names[index],
+
+		-- EntityPrototype
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
+			{
+				icon = const:png('item/locomotive'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
+			}
 		},
-		energy_usage = "100000W",
-		picture =
-		{
-			filename = "__ElectricTrain2__/graphics/relais-1.png",
-			priority = "low",
-			width = 196,
-			height = 254,
-			shift = util.by_pixel(1, -16),
-			scale = 0.5			
-		}
+		minable = {
+			result = const.locomotive_names[index],
+		},
+		fast_replaceable_group = const:with_prefix('e-locomotive'),
+
+		-- Vehicle Prototype
+		stop_trigger = meld.overwrite {
+			{
+				type = 'play-sound',
+				sound = sounds.train_brakes,
+			},
+			{
+				type = 'play-sound',
+				sound = sounds.train_brake_screech,
+			},
+		},
+
+		-- EntityWithHealthPrototype
+		max_health = locomotive.max_health * factor,
+
+		-- VehiclePrototype
+		braking_force = locomotive.braking_force * factor,
+		friction_force = locomotive.friction_force / factor,
+
+		-- RollingStockPrototype
+		max_speed = locomotive.max_speed * factor,
+		air_resistance = locomotive.air_resistance / factor,
+
+		-- LocomotivePrototype
+		max_power = (MAX_POWER * factor) .. 'kW',
+		reversing_power_modifier = locomotive.reversing_power_modifier * factor,
+
+		-- LocomotivePrototype
+		energy_source = {
+			fuel_inventory_size = 0,
+			fuel_categories = meld.overwrite { 'et-electric-fuel' },
+			smoke = meld.delete(),
+			emissions_per_minute = nil,
+		},
+	})
+end
+
+
+-- at full acceleration, a type 1 loco pulls 600kW, which is 10kJ/tick
+-- a power station should be able to support 20 type 1 locomotives
+--
+-- at tick rate 2, there must be 10kJ * 2 * 20 = 400kJ buffer capacity
+-- to refill 200kJ in one tick, it must be able to pull 12000kW
+
+---@type data.ElectricEnergyInterfacePrototype
+local function make_control_station(index)
+	local factor = const.tier_multipliers[index]
+
+	-- consumption per loco, scaled for tiers. A base loco consumes 10kJ/tick
+	local base_consumption = loco_consumption_per_tick * factor
+
+	-- The amount of energy needed per tick to fully power all supported locos
+	local buffer_capacity_per_tick = LOCOS_PER_TIER * base_consumption
+	-- basic drain (nothing is free)
+	local drain = 200 + 50 * factor
+	-- input flow limit to fully load one tick worth of energy into the buffer
+	local buffer_flow_limit = buffer_capacity_per_tick * 60
+
+	return {
+		-- Prototype Base
+		type = 'electric-energy-interface',
+		name = const.control_station_names[index],
+
+		-- ElectricEnergyInterfacePrototype
+		energy_source = {
+			type = 'electric',
+			buffer_capacity = (buffer_capacity_per_tick * TICK_FACTOR) .. 'kJ',
+			input_flow_limit = (buffer_flow_limit + drain) .. 'kW',
+			output_flow_limit = '0W',
+			usage_priority = 'secondary-input',
+			drain = drain .. 'kW',
+		},
+
+		gui_mode = 'none',
+		continuous_animation = true,
+
+		animation = {
+			layers = {
+				{
+					filename = const:png('entity/control-station-animation'),
+					priority = 'high',
+					width = 160,
+					height = 290,
+					frame_count = 20,
+					line_length = 8,
+					shift = util.by_pixel(0, -5),
+					scale = 0.5,
+				},
+				{
+					filename = const:png('entity/control-station-emission'),
+					blend_mode = 'additive',
+					priority = 'high',
+					width = 160,
+					height = 290,
+					frame_count = 20,
+					line_length = 8,
+					shift = util.by_pixel(0, -5),
+					draw_as_glow = true,
+					scale = 0.5,
+				},
+				{
+					filename = const:png('entity/control-station-shadow'),
+					priority = 'high',
+					width = 400,
+					height = 350,
+					line_length = 1,
+					repeat_count = 20,
+					shift = util.by_pixel(0, -5),
+					draw_as_shadow = true,
+					scale = 0.5,
+				},
+			},
+		},
+
+		-- EntityWithHealthPrototype
+		max_health = 200 + 50 * factor,
+		dying_explosion = 'medium-explosion',
+		corpse = 'medium-remnants',
+
+		-- EntityPrototype
+		icon = const:png('item/control-station-' .. index),
+		collision_box = { { -1.45, -1.95 }, { 1.45, 1.95 } },
+		collision_mask = collision_mask_util.get_default_mask('simple-entity'),
+		selection_box = { { -1.5, -2 }, { 1.5, 2 } },
+
+		flags = {
+			'placeable-neutral',
+			'player-creation',
+		},
+
+		minable = {
+			mining_time = 1,
+			result = const.control_station_names[index],
+		},
 	}
-})
-
-
-local cargo_wagon_2 = table.deepcopy(data.raw['cargo-wagon']['cargo-wagon'])
-cargo_wagon_2.name = "et-cargo-wagon-2"
-cargo_wagon_2.icon = "__ElectricTrain2__/graphics/cargo2.png"
-cargo_wagon_2.inventory_size = 60
-cargo_wagon_2.minable.result = "et-cargo-wagon-2"
-cargo_wagon_2.max_health = 800
-cargo_wagon_2.weight = 1500
-cargo_wagon_2.max_speed = 1.8
-cargo_wagon_2.braking_force = 4
-cargo_wagon_2.friction_force = 0.375
-cargo_wagon_2.air_resistance = 0.003
-cargo_wagon_2.icon_size = 32
-cargo_wagon_2.icon_mipmaps = nil
-
-local cargo_wagon_3 = table.deepcopy(data.raw['cargo-wagon']['cargo-wagon'])
-cargo_wagon_3.name = "et-cargo-wagon-3"
-cargo_wagon_3.icon = "__ElectricTrain2__/graphics/cargo3.png"
-cargo_wagon_3.inventory_size = 80
-cargo_wagon_3.minable.result = "et-cargo-wagon-3"
-cargo_wagon_3.max_health = 1000
-cargo_wagon_3.weight = 2000
-cargo_wagon_3.max_speed = 2.4
-cargo_wagon_3.braking_force = 5
-cargo_wagon_3.friction_force = 0.25
-cargo_wagon_3.air_resistance = 0.002
-cargo_wagon_3.icon_size = 32
-cargo_wagon_3.icon_mipmaps = nil
-
-data:extend({cargo_wagon_2,cargo_wagon_3})
-
-
-local fluid_wagon_2 = table.deepcopy(data.raw['fluid-wagon']['fluid-wagon'])
-fluid_wagon_2.name = "et-fluid-wagon-2"
-fluid_wagon_2.icon = "__ElectricTrain2__/graphics/fluid2.png"
-fluid_wagon_2.capacity = 25000 * 1.5
-fluid_wagon_2.minable.result = "et-fluid-wagon-2"
-fluid_wagon_2.max_health = 800
-fluid_wagon_2.weight = 1500
-fluid_wagon_2.max_speed = 1.8
-fluid_wagon_2.braking_force = 4
-fluid_wagon_2.friction_force = 0.375
-fluid_wagon_2.air_resistance = 0.003
-fluid_wagon_2.icon_size = 32
-fluid_wagon_2.icon_mipmaps = nil
-
-local fluid_wagon_3 = table.deepcopy(data.raw['fluid-wagon']['fluid-wagon'])
-fluid_wagon_3.name = "et-fluid-wagon-3"
-fluid_wagon_3.icon = "__ElectricTrain2__/graphics/fluid3.png"
-fluid_wagon_3.capacity = 25000 * 2
-fluid_wagon_3.minable.result = "et-fluid-wagon-3"
-fluid_wagon_3.max_health = 1000
-fluid_wagon_3.weight = 2000
-fluid_wagon_3.max_speed = 2.4
-fluid_wagon_3.braking_force = 5
-fluid_wagon_3.friction_force = 0.25
-fluid_wagon_3.air_resistance = 0.002
-fluid_wagon_3.icon_size = 32
-fluid_wagon_3.icon_mipmaps = nil
-
-data:extend({fluid_wagon_2,fluid_wagon_3})
-
-
-function format_number(number_string)
-	local number = number_string:match('%d+%.?%d+')
-	local append_suffix = number_string:match('%a+')
-	
-	local pre = ""
-	local typ = ""
-	
-	if append_suffix:len() == 2 then
-		pre =  append_suffix:sub(1, 1):upper()
-		typ =  append_suffix:sub(2):upper()
-	elseif append_suffix:len() == 1 then
-		typ = append_suffix:upper()
-	end
-
-	
-	if pre == "K" then
-		number = number * 1000
-	elseif pre == "M" then
-		number = number * 1000000
-	end
-		
-	if typ == "W" then
-		number = number / 60
-	end
-	return number
 end
 
-function CreateTrainInterface(train)	
-	local power = format_number(train.max_power)	
-	local energy = power * 1.1
+local function make_cargo_wagon(index)
+	local factor = const.tier_multipliers[index]
 
-	data:extend(
-	{
-		{
-			type = "electric-energy-interface",
-			name = train.name .. "-power",
-			icon = train.icon,
-			icon_size = 32,
-			localised_name = {"entity-name." .. train.name},
-			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
-			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-			collision_mask = {
-				layers = {
-					ground_tile = true
-				}
-			},
-			selectable_in_game = false,
-			energy_source =
+	return meld(util.copy(cargo_wagon), {
+		-- Prototype Base
+		name = const.cargo_wagon_names[index],
+
+		-- EntityPrototype
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
 			{
-				type = "electric",
-				buffer_capacity = (energy * 2) .. "J",
-				usage_priority = "secondary-input",
-				input_flow_limit = energy .. "J" ,
-				drain = power / 10 .. "J" ,
-				render_no_network_icon = false,
-				render_no_power_icon = false
+				icon = const:png('item/cargo-wagon'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
 			},
-			picture =
-			{
-				filename = "__core__/graphics/empty.png",
-				priority = "extra-high",
-				width = 1,
-				height = 1
-			},
-			order = "z"
-		}
+		},
+		minable = {
+			result = const.cargo_wagon_names[index],
+		},
+
+		-- EntityWithHealthPrototype
+		max_health = cargo_wagon.max_health * factor,
+
+		-- VehiclePrototype
+		braking_force = cargo_wagon.braking_force * factor,
+		friction_force = cargo_wagon.friction_force / factor,
+
+		-- RollingStockPrototype
+		weight = cargo_wagon.weight * factor,
+		max_speed = cargo_wagon.max_speed * factor,
+		air_resistance = cargo_wagon.air_resistance / factor,
+
+		-- CargoWagonPrototype
+		inventory_size = cargo_wagon.inventory_size * factor,
+		quality_affects_inventory_size = true,
 	})
 end
 
-CreateTrainInterface(data.raw['locomotive']['et-electric-locomotive-1'])	
-CreateTrainInterface(data.raw['locomotive']['et-electric-locomotive-2'])
-CreateTrainInterface(data.raw['locomotive']['et-electric-locomotive-3'])
+local function make_fluid_wagon(index)
+	local factor = const.tier_multipliers[index]
 
-function InsertMUControl(name)
-	data:extend(
-	{
-		{
-			type = "electric-energy-interface",
-			name = name .. "-power",
-			icon = "__core__/graphics/empty.png",
-			icon_size = 32,
-			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
-			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-			collision_mask = {
-				layers = {
-					ground_tile = true
-				}
-			},
-			selectable_in_game = false,
-			energy_source =
+	return meld(util.copy(fluid_wagon), {
+		-- Prototype Base
+		name = const.fluid_wagon_names[index],
+
+		-- EntityPrototype
+		icon = meld.delete(),
+		icon_size = meld.delete(),
+		icons = {
 			{
-				type = "void"
+				icon = const:png('item/fluid-wagon'),
+				icon_size = 64,
+				tint = const.tier_tint[index],
 			},
-			picture =
-			{
-				filename = "__core__/graphics/empty.png",
-				priority = "extra-high",
-				width = 1,
-				height = 1
-			},
-			order = "z"
-		}
+		},
+		minable = {
+			result = const.fluid_wagon_names[index],
+		},
+
+		-- EntityWithHealthPrototype
+		max_health = fluid_wagon.max_health * factor,
+
+		-- VehiclePrototype
+		braking_force = fluid_wagon.braking_force * factor,
+		friction_force = fluid_wagon.friction_force / factor,
+
+		-- RollingStockPrototype
+		weight = fluid_wagon.weight * factor,
+		max_speed = fluid_wagon.max_speed * factor,
+		air_resistance = fluid_wagon.air_resistance / factor,
+
+		-- FluidWagonPrototype
+		capacity = fluid_wagon.capacity * factor,
+		quality_affects_inventory_size = true,
 	})
 end
 
-if mods['MultipleUnitTrainControl'] then
-	InsertMUControl("et-electric-locomotive-1-mu")
-	InsertMUControl("et-electric-locomotive-2-mu")
-	InsertMUControl("et-electric-locomotive-3-mu")
-end
+data:extend {
+	make_engine(1),
+	make_engine(2),
+	make_engine(3),
+}
+
+data:extend {
+	make_control_station(1),
+	make_control_station(2),
+	make_control_station(3),
+}
+
+data:extend {
+	make_cargo_wagon(2),
+	make_cargo_wagon(3),
+	make_fluid_wagon(2),
+	make_fluid_wagon(3),
+}
+
+-- function format_number(number_string)
+-- 	local number = number_string:match('%d+%.?%d+')
+-- 	local append_suffix = number_string:match('%a+')
+
+-- 	local pre = ""
+-- 	local typ = ""
+
+-- 	if append_suffix:len() == 2 then
+-- 		pre =  append_suffix:sub(1, 1):upper()
+-- 		typ =  append_suffix:sub(2):upper()
+-- 	elseif append_suffix:len() == 1 then
+-- 		typ = append_suffix:upper()
+-- 	end
+
+
+-- 	if pre == "K" then
+-- 		number = number * 1000
+-- 	elseif pre == "M" then
+-- 		number = number * 1000000
+-- 	end
+
+-- 	if typ == "W" then
+-- 		number = number / 60
+-- 	end
+-- 	return number
+-- end
+
+-- function CreateTrainInterface(train)	
+-- 	local power = format_number(train.max_power)	
+-- 	local energy = power * 1.1
+
+-- 	data:extend(
+-- 	{
+-- 		{
+-- 			type = "electric-energy-interface",
+-- 			name = train.name .. "-power",
+-- 			icon = train.icon,
+-- 			icon_size = 32,
+-- 			localised_name = {"entity-name." .. train.name},
+-- 			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
+-- 			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
+-- 			collision_mask = {
+-- 				layers = {
+-- 					ground_tile = true
+-- 				}
+-- 			},
+-- 			selectable_in_game = false,
+-- 			energy_source =
+-- 			{
+-- 				type = "electric",
+-- 				buffer_capacity = (energy * 2) .. "J",
+-- 				usage_priority = "secondary-input",
+-- 				input_flow_limit = energy .. "J" ,
+-- 				drain = power / 10 .. "J" ,
+-- 				render_no_network_icon = false,
+-- 				render_no_power_icon = false
+-- 			},
+-- 			picture =
+-- 			{
+-- 				filename = "__core__/graphics/empty.png",
+-- 				priority = "extra-high",
+-- 				width = 1,
+-- 				height = 1
+-- 			},
+-- 			order = "z"
+-- 		}
+-- 	})
+-- end
+
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[1]])	
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[2]])
+-- CreateTrainInterface(data.raw['locomotive'][const.locomotive_names[3]])
+
+-- function InsertMUControl(name)
+-- 	data:extend(
+-- 	{
+-- 		{
+-- 			type = "electric-energy-interface",
+-- 			name = name .. "-power",
+-- 			icon = "__core__/graphics/empty.png",
+-- 			icon_size = 32,
+-- 			collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
+-- 			selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
+-- 			collision_mask = {
+-- 				layers = {
+-- 					ground_tile = true
+-- 				}
+-- 			},
+-- 			selectable_in_game = false,
+-- 			energy_source =
+-- 			{
+-- 				type = "void"
+-- 			},
+-- 			picture =
+-- 			{
+-- 				filename = "__core__/graphics/empty.png",
+-- 				priority = "extra-high",
+-- 				width = 1,
+-- 				height = 1
+-- 			},
+-- 			order = "z"
+-- 		}
+-- 	})
+-- end
+
+-- if mods['MultipleUnitTrainControl'] then
+-- 	InsertMUControl("const.locomotive_names[1]-mu")
+-- 	InsertMUControl("et-electric-locomotive-2-mu")
+-- 	InsertMUControl("et-electric-locomotive-3-mu")
+-- end

@@ -4,11 +4,17 @@
 
 require('lib.init')
 
-require("prototypes.entity")
-require("prototypes.group")
-require("prototypes.recipe")
-require("prototypes.item")
-require("prototypes.technology")
+require('prototypes.group')
+-- entities must come before item because the loco consumption
+-- is used by the fuel item definition
+require('prototypes.entity')
+require('prototypes.item')
+local recipes = require('prototypes.recipe')
+recipes:defaultRecipes()
+
+local technology = require('prototypes.technology')
+technology:defaultTechnology()
+
 
 ------------------------------------------------------------------------
 
