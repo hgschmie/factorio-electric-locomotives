@@ -35,7 +35,12 @@ local Settings = {
             key = const.settings.engines_per_control_station,
             value = 20,
         },
-    }
+        -- Bob's mods for enable/disable wagons
+        ['bobmods-logistics-trains'] = {
+            key = 'bobmods-logistics-trains',
+            value = false,
+        },
+    },
 }
 
 return Settings

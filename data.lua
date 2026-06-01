@@ -19,9 +19,11 @@ item:defaultEntities()
 recipes:defaultRecipes()
 technology:defaultTechnology()
 
+local bob_logistics = Framework.settings:startup_setting('bobmods-logistics-trains')
+
 local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
-local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo)
-local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid)
+local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo) and not bob_logistics
+local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid) and not bob_logistics
 
 if mk_engines then
     entity:makeAdvancedEngines()
