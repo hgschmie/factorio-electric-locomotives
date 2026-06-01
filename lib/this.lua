@@ -14,6 +14,7 @@ local This = {
     other_mods = {
         ['reverse-factory'] = 'reverse-factory',
         ['bobvehicleequipment'] = 'bobvehicleequipment',
+        ['MultipleUnitTrainControl'] = 'multiple-unit-train-control',
 
     },
     remote_apis = {

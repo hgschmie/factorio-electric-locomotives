@@ -84,7 +84,12 @@ local electric_railway = {
 
 local Technology = {}
 
+local mod_data = assert(data.raw['mod-data'][const.name])
+
 function Technology:defaultTechnology()
+	local names = mod_data.data.technology.base
+	names[#names + 1] = electric_railway[1].name
+
 	data:extend {
 		electric_railway[1],
 	}
@@ -94,8 +99,9 @@ end
 ---@param mk_cargo boolean
 ---@param mk_fluid boolean
 function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
-
 	if not (mk_engines or mk_cargo or mk_fluid) then return end
+
+	local names = mod_data.data.technology.advanced
 
 	for idx = 2, 3 do
 		local effects = electric_railway[idx].effects
@@ -124,6 +130,8 @@ function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
 				recipe = const.fluid_wagon_prefix .. idx,
 			}
 		end
+
+		names[#names + 1] = electric_railway[idx].name
 	end
 
 	data:extend {

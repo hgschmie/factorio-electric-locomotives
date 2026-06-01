@@ -6,6 +6,7 @@ require('lib.init')
 
 local const = require('lib.constants')
 
+require('prototypes.mod-data')
 require('prototypes.group')
 -- entities must come before item because the loco consumption
 -- is used by the fuel item definition

@@ -25,14 +25,23 @@ local LOCOS_PER_TIER = Framework.settings:startup_setting(const.settings_names.e
 -- at full acceleration, a base loco pulls 600kW, which is 10kJ/tick
 loco_consumption_per_tick = MAX_POWER / 60 -- global to use in items
 
+local mod_data = assert(data.raw['mod-data'][const.name])
+
 local Entity = {}
 
-local function make_engine(index)
+---@param index integer
+---@param tier string
+---@return data.LocomotivePrototype
+local function make_engine(index, tier)
 	local factor = const.tier_multipliers[index]
+	local name = const.locomotive_prefix .. index
+
+	local names = mod_data.data.locomotive[tier]
+	names[#names + 1] = name
 
 	return meld(util.copy(locomotive), {
 		-- Prototype Base
-		name = const.locomotive_prefix .. index,
+		name = name,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -45,7 +54,7 @@ local function make_engine(index)
 			},
 		},
 		minable = {
-			result = const.locomotive_prefix .. index,
+			result = name,
 		},
 
 		-- Vehicle Prototype
@@ -91,9 +100,15 @@ end
 -- at tick rate 2, there must be 10kJ * 2 * 20 = 400kJ buffer capacity
 -- to refill 200kJ in one tick, it must be able to pull 12000kW
 
----@type data.ElectricEnergyInterfacePrototype
-local function make_control_station(index)
+---@param index integer
+---@param tier string
+---@return data.ElectricEnergyInterfacePrototype
+local function make_control_station(index, tier)
 	local factor = const.tier_multipliers[index]
+	local name = const.control_station_prefix .. index
+
+	local names = mod_data.data.control_station[tier]
+	names[#names + 1] = name
 
 	-- consumption per loco, scaled for tiers. A base loco consumes 10kJ/tick
 	local base_consumption = loco_consumption_per_tick * factor
@@ -108,7 +123,7 @@ local function make_control_station(index)
 	return {
 		-- Prototype Base
 		type = 'electric-energy-interface',
-		name = const.control_station_prefix .. index,
+		name = name,
 
 		-- ElectricEnergyInterfacePrototype
 		energy_source = {
@@ -179,17 +194,24 @@ local function make_control_station(index)
 
 		minable = {
 			mining_time = 1,
-			result = const.control_station_prefix .. index,
+			result = name,
 		},
 	}
 end
 
-local function make_cargo_wagon(index)
+---@param index integer
+---@param tier string
+---@return data.CargoWagonPrototype
+local function make_cargo_wagon(index, tier)
 	local factor = const.tier_multipliers[index]
+	local name = const.cargo_wagon_prefix .. index
+
+	local names = mod_data.data.cargo_wagon[tier]
+	names[#names + 1] = name
 
 	return meld(util.copy(cargo_wagon), {
 		-- Prototype Base
-		name = const.cargo_wagon_prefix .. index,
+		name = name,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -202,7 +224,7 @@ local function make_cargo_wagon(index)
 			},
 		},
 		minable = {
-			result = const.cargo_wagon_prefix .. index,
+			result = name,
 		},
 
 		-- EntityWithHealthPrototype
@@ -223,12 +245,19 @@ local function make_cargo_wagon(index)
 	})
 end
 
-local function make_fluid_wagon(index)
+---@param index integer
+---@param tier string
+---@return data.FluidWagonPrototype
+local function make_fluid_wagon(index, tier)
 	local factor = const.tier_multipliers[index]
+	local name = const.fluid_wagon_prefix .. index
+
+	local names = mod_data.data.fluid_wagon[tier]
+	names[#names + 1] = name
 
 	return meld(util.copy(fluid_wagon), {
 		-- Prototype Base
-		name = const.fluid_wagon_prefix .. index,
+		name = name,
 
 		-- EntityPrototype
 		icon = meld.delete(),
@@ -241,7 +270,7 @@ local function make_fluid_wagon(index)
 			},
 		},
 		minable = {
-			result = const.fluid_wagon_prefix .. index,
+			result = name,
 		},
 
 		-- EntityWithHealthPrototype
@@ -264,32 +293,32 @@ end
 
 function Entity:defaultEntities()
 	data:extend {
-		make_engine(1),
-		make_control_station(1),
+		make_engine(1, 'base'),
+		make_control_station(1, 'base'),
 	}
 end
 
 function Entity:makeAdvancedEngines()
 	data:extend {
-		make_engine(2),
-		make_control_station(2),
+		make_engine(2, 'advanced'),
+		make_control_station(2, 'advanced'),
 
-		make_engine(3),
-		make_control_station(3),
+		make_engine(3, 'advanced'),
+		make_control_station(3, 'advanced'),
 	}
 end
 
 function Entity:makeCargoWagons()
 	data:extend {
-		make_cargo_wagon(2),
-		make_cargo_wagon(3),
+		make_cargo_wagon(2, 'advanced'),
+		make_cargo_wagon(3, 'advanced'),
 	}
 end
 
 function Entity:makeFluidWagons()
 	data:extend {
-		make_fluid_wagon(2),
-		make_fluid_wagon(3),
+		make_fluid_wagon(2, 'advanced'),
+		make_fluid_wagon(3, 'advanced'),
 	}
 end
 

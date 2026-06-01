@@ -15,3 +15,7 @@
 ---@field total_engine_count integer
 ---@field total_control_station_count integer
 ---@field surfaces table<integer, elok.Surface>
+
+---@class elok.Names
+---@field base string[]
+---@field advanced string[]

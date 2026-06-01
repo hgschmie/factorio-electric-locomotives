@@ -4,6 +4,9 @@
 -- can be loaded into scripts and data
 ------------------------------------------------------------------------
 
+local util = require('util')
+local table = require('stdlib.utils.table')
+
 --------------------------------------------------------------------------------
 -- main constants
 --------------------------------------------------------------------------------
@@ -92,35 +95,25 @@ Constants.control_station_prefix = 'et-control-station-'
 Constants.fuel_prefix = 'et-electric-fuel-'
 Constants.technology_prefix = 'et-electric-railway-'
 
-local locomotive_names, cargo_wagon_names, fluid_wagon_names
-
 local cache = {}
 
 ---@class elok.MakeNamesArgs
 ---@field name string
----@field default string[]?
----@field advanced string[]?
 ---@field enable_advanced fun(): boolean
 
 ---@param args elok.MakeNamesArgs
 local function make_names(args)
-    args.advanced = args.advanced or { '2', '3' }
-    args.default = args.default or { '1' }
+    ---@type table<string, elok.Names>
+    local mod_data = assert(prototypes.mod_data[Constants.name]).data
+    local data = assert(mod_data[args.name])
 
     return function()
         if cache[args.name] then return cache[args.name] end
 
-        local prefix = assert(Constants[args.name .. '_prefix'])
-        local names = {}
-
-        for _, tier in pairs(args.default) do
-            names[#names + 1] = prefix .. tier
-        end
+        local names = util.copy(data.base)
 
         if args.enable_advanced() then
-            for _, tier in pairs(args.advanced) do
-                names[#names + 1] = prefix .. tier
-            end
+            names = table.array_combine(names, data.advanced)
         end
 
         cache[args.name] = names
@@ -144,13 +137,11 @@ if script then
 
     Constants.getCargoWagonNames = make_names {
         name = 'cargo_wagon',
-        default = {},
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_cargo) end,
     }
 
     Constants.getFluidWagonNames = make_names {
         name = 'fluid_wagon',
-        default = {},
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_fluid) end,
     }
 
