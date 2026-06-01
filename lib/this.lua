@@ -13,6 +13,7 @@ Framework.settings:add_defaults(require('lib.settings'))
 local This = {
     other_mods = {
         ['reverse-factory'] = 'reverse-factory',
+        ['bobvehicleequipment'] = 'bobvehicleequipment',
 
     },
     remote_apis = {

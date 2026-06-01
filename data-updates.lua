@@ -96,21 +96,6 @@ require('lib.init')
 -- end
 
 
-
--- if mods['bobvehicleequipment'] then
--- 	if settings.startup['bobmods-vehicleequipment-enablevehiclegrids'].value then
--- 		data.raw['locomotive']['et-electric-locomotive-1'].equipment_grid = "bob-locomotive"
--- 		if settings.startup['mk-train'] then
--- 			data.raw['locomotive']['et-electric-locomotive-2'].equipment_grid = "bob-locomotive-2"
--- 			data.raw['locomotive']['et-electric-locomotive-3'].equipment_grid = "bob-locomotive-3"
--- 		end
--- 		if settings.startup['mk-cargo'].value then
--- 			data.raw['cargo-wagon']['et-cargo-wagon-2'].equipment_grid = "bob-cargo-wagon-2"
--- 			data.raw['cargo-wagon']['et-cargo-wagon-3'].equipment_grid = "bob-cargo-wagon-3"
--- 		end
--- 	end
--- end
-
 ------------------------------------------------------------------------
 
 ---@diagnostic disable-next-line: undefined-field
