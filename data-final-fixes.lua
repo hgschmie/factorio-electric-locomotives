@@ -18,6 +18,10 @@ local WAGON_TYPES = {
 local unlock_max_speed = Framework.settings:startup_setting(const.settings_names.unlock_max_speed)
 
 if unlock_max_speed then
+    -- scales any entity that can run behind a regular locomotive at full speed
+    -- to be able to run after the fastest electric locomotive and not slow the train down.
+    -- Entities that either can not run at full speed or run faster than the fastest electric
+    -- locomotive are not touched
     local locomotive = data.raw['locomotive']['locomotive']
     local max_speed_factor = locomotive.max_speed
 
