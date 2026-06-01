@@ -47,7 +47,6 @@ local function make_engine(index)
 		minable = {
 			result = const.locomotive_prefix .. index,
 		},
-		fast_replaceable_group = const:with_prefix('e-locomotive'),
 
 		-- Vehicle Prototype
 		stop_trigger = meld.overwrite {

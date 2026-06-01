@@ -41,9 +41,7 @@ if mk_fluid then
     recipes:unlockFluidWagons()
 end
 
-if mk_engines or mk_cargo or mk_fluid then
-    technology:unlockAdvancedTiers()
-end
+technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
 
 ------------------------------------------------------------------------
 

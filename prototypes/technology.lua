@@ -82,39 +82,6 @@ local electric_railway = {
 	},
 }
 
-local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
-local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo)
-local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid)
-
-for idx = 2, 3 do
-	local effects = electric_railway[idx].effects
-
-	if mk_engines then
-		effects[#effects + 1] = {
-			type = 'unlock-recipe',
-			recipe = const.locomotive_prefix .. idx,
-		}
-		effects[#effects + 1] = {
-			type = 'unlock-recipe',
-			recipe = const.control_station_prefix .. idx,
-		}
-	end
-
-	if mk_cargo then
-		effects[#effects + 1] = {
-			type = 'unlock-recipe',
-			recipe = const.cargo_wagon_prefix .. idx,
-		}
-	end
-
-	if mk_fluid then
-		effects[#effects + 1] = {
-			type = 'unlock-recipe',
-			recipe = const.fluid_wagon_prefix .. idx,
-		}
-	end
-end
-
 local Technology = {}
 
 function Technology:defaultTechnology()
@@ -123,7 +90,42 @@ function Technology:defaultTechnology()
 	}
 end
 
-function Technology:unlockAdvancedTiers()
+---@param mk_engines boolean
+---@param mk_cargo boolean
+---@param mk_fluid boolean
+function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
+
+	if not (mk_engines or mk_cargo or mk_fluid) then return end
+
+	for idx = 2, 3 do
+		local effects = electric_railway[idx].effects
+
+		if mk_engines then
+			effects[#effects + 1] = {
+				type = 'unlock-recipe',
+				recipe = const.locomotive_prefix .. idx,
+			}
+			effects[#effects + 1] = {
+				type = 'unlock-recipe',
+				recipe = const.control_station_prefix .. idx,
+			}
+		end
+
+		if mk_cargo then
+			effects[#effects + 1] = {
+				type = 'unlock-recipe',
+				recipe = const.cargo_wagon_prefix .. idx,
+			}
+		end
+
+		if mk_fluid then
+			effects[#effects + 1] = {
+				type = 'unlock-recipe',
+				recipe = const.fluid_wagon_prefix .. idx,
+			}
+		end
+	end
+
 	data:extend {
 		electric_railway[2],
 		electric_railway[3],

@@ -31,21 +31,6 @@ require('lib.init')
 -- end
 
 
--- if mods['Vehicle Wagon'] and settings.startup['mk-train'].value then
--- 	for _,wagon in pairs(data.raw['cargo-wagon']) do
--- 		if wagon.name:match("vehicle%-wagon") then	
--- 			wagon.max_speed = 2.4
--- 		end
--- 	end
--- end
-
-
--- if mods['FactorioExtended-Trains'] and settings.startup['mk-train'].value then
--- 	data.raw['cargo-wagon']['cargo-wagon-2'].max_speed = 1.8
--- 	data.raw['cargo-wagon']['cargo-wagon-3'].max_speed = 2.4
--- 	data.raw['fluid-wagon']['fluid-wagon-2'].max_speed = 1.8
--- 	data.raw['fluid-wagon']['fluid-wagon-3'].max_speed = 2.4
--- end
 
 ------------------------------------------------------------------------
 

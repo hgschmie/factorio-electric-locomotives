@@ -44,13 +44,20 @@ data:extend {
 		order = 'ad',
 	},
 	{
+		type = 'bool-setting',
+		name = const.settings.unlock_max_speed,
+		setting_type = 'startup',
+		default_value = true,
+		order = 'ae',
+	},
+	{
 		type = 'int-setting',
 		name = const.settings.tick_interval,
 		setting_type = 'startup',
 		default_value = 5,
 		minimum_value = 2,
 		maximum_value = 60,
-		order = 'ae',
+		order = 'ba',
 	},
 	{
 		type = 'int-setting',
@@ -59,7 +66,7 @@ data:extend {
 		default_value = 20,
 		minimum_value = 2,
 		maximum_value = 1000,
-		order = 'af',
+		order = 'bb',
 	},
 }
 

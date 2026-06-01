@@ -67,6 +67,7 @@ Constants.settings_keys = {
     'show_icons',
     'tick_interval',
     'engines_per_control_station',
+    'unlock_max_speed',
 }
 
 Constants.settings_names = {}
