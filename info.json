@@ -1,16 +1,19 @@
 {
 	"name": "electric-locomotives",
-	"author": "hgschmie",
 	"version": "1.0.0",
 	"title": "Electric Locomotives",
-	"description": "Adds electric locomotives to the game.",
+	"description": "Adds multiple tiers of electric locomotives",
+	"author": "hgschmie",
+	"contact": "https://github.com/hgschmie/factorio-electric-locomotives/issues",
+	"homepage": "https://github.com/hgschmie/factorio-electric-locomotives",
 	"factorio_version": "2.0",
 	"dependencies": [
 		"base >= 2.0",
-		"?FactorioExtended-Trains",
-		"?boblogistics",
-		"?Vehicle Wagon",
-		"?EvenMoreLight",
-		"?MultipleUnitTrainControl"
+		"(?)boblogistics",
+		"(?)bobvehicleequipment",
+		"(?)reverse-factory",
+		"! ElectricTrain2",
+		"! ElectricTrainFix",
+		"! ElectricTrainFix2"
 	]
 }
