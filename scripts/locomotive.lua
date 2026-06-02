@@ -48,7 +48,9 @@ end
 
 ---@param entity LuaEntity
 function Locomotive:createLocomotive(entity)
-    local surface = This:locateSurface(entity.surface_index)
+    local surface, storage = This:locateSurface(entity.surface_index)
+
+    if surface.engines[entity.unit_number] then return end
 
     local engine_tier = tonumber(entity.name:sub(entity.name:find('%d')))
 
@@ -62,6 +64,7 @@ function Locomotive:createLocomotive(entity)
     }
 
     surface.engines[entity.unit_number] = engine
+    storage.total_engine_count = storage.total_engine_count + 1
 
     render_sprite(engine, -12, -56, 'virtual-signal/signal-lightning')
     render_sprite(engine, 12, -56, 'virtual-signal/signal-' .. engine_tier)
@@ -71,13 +74,16 @@ end
 
 ---@param engine LuaEntity
 function Locomotive:destroyLocomotive(engine)
-    local surface = This:locateSurface(engine.surface_index)
+    local surface, storage = This:locateSurface(engine.surface_index)
+
+    if not surface.engines[engine.unit_number] then return end
 
     for _, sprite in pairs(surface.engines[engine.unit_number].sprites) do
         sprite.destroy()
     end
 
     surface.engines[engine.unit_number] = nil
+    storage.total_engine_count = storage.total_engine_count - 1
 end
 
 ---@param engine elok.Engine

@@ -11,11 +11,13 @@ local locomotive = data.raw['item-with-entity-data']['locomotive']
 local cargo_wagon = data.raw['item-with-entity-data']['cargo-wagon']
 local fluid_wagon = data.raw['item-with-entity-data']['fluid-wagon']
 
+-- how many ticks must a control station support
+local TICK_FACTOR = Framework.settings:startup_setting(const.settings_names.tick_interval)
+
 -- At full acceleration, a type 1 loco burns 10kJ per tick
 -- a fuel item lasts ~ 20 ticks before refuel, so if it runs out of
 -- fuel, it will decelerate and stop within 1/3 of a second.
-local TICKS_PER_FUEL = 20
-
+local TICKS_PER_FUEL = 4 * TICK_FACTOR
 
 local function make_engine(index)
 	return meld(util.copy(locomotive), {

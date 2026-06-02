@@ -57,6 +57,9 @@ function This:storage()
     return assert(storage.elok_data)
 end
 
+---@param surface_index integer
+---@return elok.Surface surface
+---@return elok.Storage storage
 function This:locateSurface(surface_index)
     local elok_storage = self:storage()
 
@@ -65,7 +68,7 @@ function This:locateSurface(surface_index)
         power_sources = {},
     }
 
-    return elok_storage.surfaces[surface_index]
+    return elok_storage.surfaces[surface_index], elok_storage
 end
 
 return This
