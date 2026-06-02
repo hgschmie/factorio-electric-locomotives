@@ -12,7 +12,6 @@ Framework.settings:add_defaults(require('lib.settings'))
 ---@field ControlStation elok.ControlStation
 local This = {
     other_mods = {
-        ['reverse-factory'] = 'reverse-factory',
         ['bobvehicleequipment'] = 'bobvehicleequipment',
         ['MultipleUnitTrainControl'] = 'multiple-unit-train-control',
 

@@ -16,9 +16,6 @@ local fluid_wagon = data.raw['fluid-wagon']['fluid-wagon']
 local locomotive = data.raw['locomotive']['locomotive']
 local MAX_POWER = locomotive.max_power:sub(locomotive.max_power:find('%d+'))
 
--- how many ticks must a control station support
-local TICK_FACTOR = Framework.settings:startup_setting(const.settings_names.tick_interval)
-
 -- how many locos should a control station support at full load
 local LOCOS_PER_TIER = Framework.settings:startup_setting(const.settings_names.engines_per_control_station)
 
@@ -97,7 +94,8 @@ end
 -- at full acceleration, a type 1 loco pulls 600kW, which is 10kJ/tick
 -- a power station should be able to support 20 type 1 locomotives
 --
--- at tick rate 2, there must be 10kJ * 2 * 20 = 400kJ buffer capacity
+-- there must be 10kJ * 20 = 200kJ buffer capacity, as the buffer refills
+-- automatically through the buffer_flow_limit.
 -- to refill 200kJ in one tick, it must be able to pull 12000kW
 
 ---@param index integer
