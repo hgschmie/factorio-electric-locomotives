@@ -86,8 +86,12 @@ end
 local function on_surface_cleared(event)
 	local elok_storage = This:storage()
 
-	-- drop all references to engines or power sources.
-	elok_storage.surfaces[event.surface_index] = nil
+	local surface = elok_storage.surfaces[event.surface_index]
+	if surface then
+		elok_storage.total_engine_count = elok_storage.total_engine_count - table_size(surface.engines)
+		elok_storage.total_control_station_count = elok_storage.total_control_station_count - table_size(surface.power_sources)
+		elok_storage.surfaces[event.surface_index] = nil
+	end
 end
 
 --------------------------------------------------------------------------------
