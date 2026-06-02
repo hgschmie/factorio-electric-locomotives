@@ -32,8 +32,6 @@ function Constants.framework_init()
         name = Constants.name,
         -- The filesystem root.
         root = Constants.root,
-        -- remote API
-        remote_name = Constants.lse_name,
     }
 end
 
