@@ -15,5 +15,25 @@
 		"! ElectricTrain2",
 		"! ElectricTrainFix",
 		"! ElectricTrainFix2"
-	]
+  ],
+  "package": {
+    "git_publish_branch": "main",
+    "readme": "README.md",
+    "gallery": [
+    ],
+    "sync_portal_details": true,
+    "ignore": [
+      "graphics/src/*",
+      "portal/*",
+      "releases/*",
+      "**/*.xcf",
+      "**/.zip",
+      ".git",
+      ".gitignore",
+      ".vscode",
+      ".claude",
+      "CLAUDE.md",
+      ".DS_Store"
+    ]
+  }
 }
