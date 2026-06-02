@@ -20,6 +20,7 @@
     "git_publish_branch": "main",
     "readme": "README.md",
     "gallery": [
+      "portal/et1.png", "portal/et2.png"
     ],
     "sync_portal_details": true,
     "ignore": [
