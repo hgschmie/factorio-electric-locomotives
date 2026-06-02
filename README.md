@@ -13,7 +13,7 @@ Electric Locomotives come in three tiers: __Standard__, __MK2__ and __MK3__. By 
 | Tier Factor           | all             | 1         | 1.5       | 2         |
 | Power Consumption     | Locomotives     | 600kW     | 900 kW    | 1.2MW     |
 | Maximum Speed         | Locomotives     | 259.2 kph | 338.8 kph | 518.4 kph |
-| Charge Capacity       | Control Station | 1000kJ    | 1500kJ    | 2000kJ    |
+| Charge Capacity       | Control Station | 200kJ     | 300kJ     | 400kJ     |
 | Power Consumption     | Control Station | 12.25MW   | 18.275MW  | 24.3MW    |
 | Capacity              | Cargo Wagons    | -         | 60 slots  | 80 slots  |
 | Capacity              | Fluid Wagons    | -         | 75,000    | 100,000   |
