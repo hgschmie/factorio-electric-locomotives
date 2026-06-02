@@ -6,6 +6,7 @@ require('lib.init')
 
 local Event = require('stdlib.event.event')
 local Matchers = require('framework.matchers')
+local Ticker = require('framework.ticker')
 
 local const = require('lib.constants')
 
@@ -100,6 +101,10 @@ end
 
 local function on_configuration_changed()
 	This:init()
+
+	Ticker.resetTicker(const.locomotive_ticker_name, {
+		const.locomotive_ticker_context_field
+	})
 
 	-- unlock all known / relevant technologies
 	for _, force in pairs(game.forces) do

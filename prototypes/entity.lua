@@ -79,7 +79,6 @@ local function make_engine(index, tier)
 
 		-- LocomotivePrototype
 		max_power = (MAX_POWER * factor) .. 'kW',
-		reversing_power_modifier = locomotive.reversing_power_modifier * factor,
 
 		-- LocomotivePrototype
 		energy_source = {

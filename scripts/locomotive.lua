@@ -4,7 +4,7 @@
 
 local util = require('util')
 
-local ticker = require('framework.ticker')
+local Ticker = require('framework.ticker')
 
 local const = require('lib.constants')
 
@@ -72,17 +72,17 @@ function Locomotive:createLocomotive(entity)
     self:refuel(engine)
 end
 
----@param engine LuaEntity
-function Locomotive:destroyLocomotive(engine)
-    local surface, storage = This:locateSurface(engine.surface_index)
+---@param entity LuaEntity
+function Locomotive:destroyLocomotive(entity)
+    local surface, storage = This:locateSurface(entity.surface_index)
 
-    if not surface.engines[engine.unit_number] then return end
+    if not surface.engines[entity.unit_number] then return end
 
-    for _, sprite in pairs(surface.engines[engine.unit_number].sprites) do
+    for _, sprite in pairs(surface.engines[entity.unit_number].sprites) do
         sprite.destroy()
     end
 
-    surface.engines[engine.unit_number] = nil
+    surface.engines[entity.unit_number] = nil
     storage.total_engine_count = storage.total_engine_count - 1
 end
 
@@ -115,7 +115,6 @@ local function ticker_unit_of_work(context, values)
     local burner = assert(engine.entity.burner)
     assert(burner.currently_burning)
 
-
     local power_source = context.power_idx and context.power_sources[context.power_idx] or nil
 
     repeat
@@ -124,6 +123,7 @@ local function ticker_unit_of_work(context, values)
             local available_power = math.min(power_source.energy, required_power)
 
             if available_power > 0.1 then
+                assert(power_source.surface_index == engine.entity.surface_index)
                 power_source.energy = power_source.energy - available_power
                 burner.remaining_burning_fuel = burner.remaining_burning_fuel + available_power
 
@@ -144,22 +144,22 @@ end
 local tick_interval = Framework.settings:startup_setting(const.settings_names.tick_interval) or 2
 
 function Locomotive:tick()
-    local ticker_info = ticker.getTicker('locomotive_refresh')
+    local ticker_info = Ticker.getTicker(const.locomotive_ticker_name)
 
     local elok_storage = This:storage()
     if elok_storage.total_engine_count == 0 then return end
 
     local entities_per_tick = math.max(1, math.ceil(elok_storage.total_engine_count / tick_interval)) -- at least one
 
-    local context = ticker_info.last_tick_context or {}
+    local context = ticker_info[const.locomotive_ticker_context_field] or {}
 
-    local iterator = ticker.createWorkIterator {
+    local iterator = Ticker.createWorkIterator {
         context = context,
         -- creates the surface_index (keys of elok_storage.surfaces) as 'surface_index'
         -- stores the value of elok_storage.surfaces[<current index>] as value
         field_name = 'surface_index',
         iterable = elok_storage.surfaces,
-        sub_iterator = ticker.createWorkIterator {
+        sub_iterator = Ticker.createWorkIterator {
             context = context,
             -- iterates over the parent element. In this case, the iterable is in an
             -- attribute ('engines') which is extracted with the process_iterable function below
@@ -169,9 +169,10 @@ function Locomotive:tick()
             -- add power_sources to the context
             process_iterable = function(iterable, iterable_context)
                 iterable_context.power_sources = iterable.power_sources
-                iterable_context.power_idx = nil
-
                 return iterable.engines
+            end,
+            reset = function(iterable_context)
+                iterable_context.power_idx = nil
             end,
         },
     }
@@ -182,11 +183,7 @@ function Locomotive:tick()
         entities_per_tick = entities_per_tick - 1
     end
 
-    -- restart from first power station for the next loop
-    context.power_idx = nil
-    context.power_sources = nil
-
-    ticker_info.last_tick_context = context
+    ticker_info[const.locomotive_ticker_context_field] = context
     ticker_info.last_tick = game.tick
 end
 

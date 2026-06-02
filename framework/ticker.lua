@@ -27,12 +27,25 @@ function Ticker.getTicker(ticker_id)
     return storage.ticker[ticker_id]
 end
 
+---@param ticker_id string
+---@param ticker_fields string[]
+function Ticker.resetTicker(ticker_id, ticker_fields)
+    assert(ticker_id)
+
+    local ticker_context = Ticker.getTicker(ticker_id)
+
+    for _, field_name in pairs(ticker_fields) do
+        ticker_context[field_name] = nil
+    end
+end
+
 ---@class ff2.ticker.TickerIteratorParams
 ---@field context      ff2.ticker.TickerContext
 ---@field field_name   string
 ---@field iterable     table<any, any>?
 ---@field process_iterable (fun(iterable: table<any, any>, context: ff2.ticker.TickerContext): table<any, any>)?
 ---@field sub_iterator ff2.ticker.TickerIterator?
+---@field reset fun(context: ff2.ticker.TickerContext)?
 
 ---@param args ff2.ticker.TickerIteratorParams
 ---@return ff2.ticker.TickerIterator
@@ -87,15 +100,19 @@ function Ticker.createWorkIterator(args)
                 args.context[args.field_name] = next(iterable, args.context[args.field_name])
             end
 
+            local reset = args.context[args.field_name] == nil
+            if reset and args.reset then args.reset(args.context) end
+
             -- return to the caller. If we incremented past the last element (wraparound at the next
             -- call), then signal to the caller that they must increment as well.
-            return result, args.context[args.field_name] == nil
+            return result, reset
         end,
 
         reset = function()
             -- reset this iterator and all sub-iterators. This should not be called
             -- outside the process function.
             args.context[args.field_name] = nil
+            if args.reset then args.reset(args.context) end
             if args.sub_iterator then args.sub_iterator.reset() end
         end,
     }

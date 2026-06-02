@@ -80,6 +80,14 @@ for _, key in pairs(Constants.settings_keys) do
 end
 
 --------------------------------------------------------------------------------
+-- ticker
+--------------------------------------------------------------------------------
+
+Constants.locomotive_ticker_name = 'locomotive_refresh'
+Constants.locomotive_ticker_context_field = 'last_tick_context'
+
+
+--------------------------------------------------------------------------------
 -- entity names and maps
 --------------------------------------------------------------------------------
 
