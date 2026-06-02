@@ -285,7 +285,7 @@ local function make_fluid_wagon(index, tier)
 
 		-- FluidWagonPrototype
 		capacity = fluid_wagon.capacity * factor,
-		quality_affects_inventory_size = true,
+		quality_affects_capacity = true,
 	})
 end
 
