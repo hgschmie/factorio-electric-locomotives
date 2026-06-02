@@ -65,8 +65,6 @@ local function resync_state()
 			This.ControlStation:createControlStation(control_station)
 		end
 
-		elok_storage.total_control_station_count = elok_storage.total_control_station_count + table_size(control_stations)
-
 		local engines = surface.find_entities_filtered {
 			type = 'locomotive',
 			name = const.getLocomotiveNames(),
@@ -76,8 +74,6 @@ local function resync_state()
 		for _, engine in pairs(engines) do
 			This.Locomotive:createLocomotive(engine)
 		end
-
-		elok_storage.total_engine_count = elok_storage.total_engine_count + table_size(engines)
 	end
 end
 
