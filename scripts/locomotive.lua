@@ -169,6 +169,7 @@ function Locomotive:tick()
             -- add power_sources to the context
             process_iterable = function(iterable, iterable_context)
                 iterable_context.power_sources = iterable.power_sources
+                iterable_context.power_idx = nil
 
                 return iterable.engines
             end,
