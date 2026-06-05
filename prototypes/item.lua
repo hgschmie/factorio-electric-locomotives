@@ -91,14 +91,22 @@ local current_collector = {
 	stack_size = 50,
 }
 
-local function make_fuel(index)
+---@param index integer
+---@param speed_tier integer
+---@param acceleration_tier integer
+local function make_fuel(index, speed_tier, acceleration_tier)
 	local factor = const.tier_multipliers[index]
+
+	local speed_factor = speed_tier and const.speed_progression[speed_tier]
+	local acceleration_factor = acceleration_tier and const.acceleration_progression[acceleration_tier]
+
+	local name = const:fuel_name(index, speed_tier, acceleration_tier)
 
 	---@type data.ItemPrototype
 	return {
 		--- PrototypeBase
 		type = 'item',
-		name = const.fuel_prefix .. index,
+		name = name,
 		hidden = true,
 		hidden_in_factoriopedia = true,
 
@@ -112,6 +120,8 @@ local function make_fuel(index)
 			'hide-from-fuel-tooltip',
 		},
 		fuel_value = (loco_consumption_per_tick * factor * TICKS_PER_FUEL) .. 'kJ',
+		fuel_top_speed_multiplier = speed_factor,
+		fuel_acceleration_multiplier = acceleration_factor,
 	}
 end
 
@@ -140,20 +150,33 @@ function Item:defaultEntities()
 
 		make_engine(1),
 		make_control_station(1),
-		make_fuel(1),
 	}
+
+	local fuel = {}
+
+	for speed_tier = 0, #const.speed_progression do
+		for acceleration_tier = 0, #const.acceleration_progression do
+			fuel[#fuel + 1] = make_fuel(1, speed_tier, acceleration_tier)
+		end
+	end
+	data:extend(fuel)
 end
 
 function Item:makeAdvancedEngines()
-	data:extend {
-		make_engine(2),
-		make_control_station(2),
-		make_fuel(2),
+	for idx = 2, 3 do
+		data:extend {
+			make_engine(idx),
+			make_control_station(idx),
+		}
 
-		make_engine(3),
-		make_control_station(3),
-		make_fuel(3),
-	}
+		local fuel = {}
+		for speed_tier = 0, #const.speed_progression do
+			for acceleration_tier = 0, #const.acceleration_progression do
+				fuel[#fuel + 1] = make_fuel(idx, speed_tier, acceleration_tier)
+			end
+		end
+		data:extend(fuel)
+	end
 end
 
 function Item:makeCargoWagons()

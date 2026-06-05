@@ -30,6 +30,9 @@ if unlock_max_speed then
         if loco_prototype then max_speed_factor = math.max(max_speed_factor, loco_prototype.max_speed) end
     end
 
+    -- scale to max bonus speed progression
+    max_speed_factor = max_speed_factor * const.speed_progression[#const.speed_progression]
+
     for _, entity_type in pairs(WAGON_TYPES) do
         for _, entity in pairs(data.raw[entity_type]) do
             -- there are some entities that are slower than a regular locomotive (e.g. cargo ships).

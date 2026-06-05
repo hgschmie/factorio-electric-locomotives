@@ -100,6 +100,15 @@ Constants.fluid_wagon_prefix = 'et-fluid-wagon-'
 Constants.control_station_prefix = 'et-control-station-'
 Constants.fuel_prefix = 'et-electric-fuel-'
 Constants.technology_prefix = 'et-electric-railway-'
+Constants.technology_speed_prefix = 'et-electric-railway-speed-'
+Constants.technology_acceleration_prefix = 'et-electric-railway-acceleration-'
+
+Constants.research_technology = {}
+
+for idx = 1, 5 do
+    Constants.research_technology[#Constants.research_technology + 1] = Constants.technology_speed_prefix .. idx
+    Constants.research_technology[#Constants.research_technology + 1] = Constants.technology_acceleration_prefix .. idx
+end
 
 local cache = {}
 
@@ -170,5 +179,32 @@ Constants.tier_tint = {
     { 0.7, 0.7, 0.3, 1 },
     { 0.3, 0.7, 0.3, 1 },
 }
+
+Constants.speed_progression = {
+    [0] = 1.0,    -- Wood/Coal
+    [1] = 1.05,   -- Solid Fuel
+    [2] = 1.10,
+    [3] = 1.15,   -- Rocket Fuel / Nuclear Fuel
+    [4] = 1.20,
+    [5] = 1.25,
+}
+
+Constants.acceleration_progression = {
+    [0] = 1.0,  -- Wood/Coal
+    [1] = 1.2,  -- Solid Fuel
+    [2] = 1.5,
+    [3] = 1.8,  -- Rocket Fuel
+    [4] = 2.15,
+    [5] = 2.5,  -- Nuclear Fuel
+}
+
+---@param index integer
+---@param speed_tier integer
+---@param acceleration_tier integer
+function Constants:fuel_name(index, speed_tier, acceleration_tier)
+    return (speed_tier == 0 and acceleration_tier == 0)
+        and (Constants.fuel_prefix .. index)
+        or ('%s%d-s%d-a%d'):format(Constants.fuel_prefix, index, speed_tier, acceleration_tier)
+end
 
 return Constants

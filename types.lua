@@ -6,6 +6,9 @@
 ---@class elok.Engine
 ---@field entity LuaEntity
 ---@field sprites LuaRenderObject[]
+---@field tier integer
+---@field speed_tier integer?
+---@field acceleration_tier integer?
 
 ---@class elok.Surface
 ---@field engines table<integer, elok.Engine>

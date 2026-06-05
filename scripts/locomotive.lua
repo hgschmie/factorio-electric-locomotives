@@ -50,49 +50,70 @@ end
 function Locomotive:createLocomotive(entity)
     local surface, storage = This:locateSurface(entity.surface_index)
 
-    if surface.engines[entity.unit_number] then return end
+    local engine = surface.engines[entity.unit_number]
 
-    local engine_tier = tonumber(entity.name:sub(entity.name:find('%d')))
+    if not engine then
+        ---@type elok.Engine
+        engine = {
+            entity = entity,
+            sprites = {},
+            tier = tonumber(entity.name:sub(entity.name:find('%d'))),
+        }
 
-    -- assign the right fuel
-    entity.burner.currently_burning = assert(prototypes.item[const.fuel_prefix .. engine_tier])
+        surface.engines[entity.unit_number] = engine
+        storage.total_engine_count = storage.total_engine_count + 1
 
-    ---@type elok.Engine
-    local engine = {
-        entity = entity,
-        sprites = {},
-    }
-
-    surface.engines[entity.unit_number] = engine
-    storage.total_engine_count = storage.total_engine_count + 1
-
-    render_sprite(engine, -12, -56, 'virtual-signal/signal-lightning')
-    render_sprite(engine, 12, -56, 'virtual-signal/signal-' .. engine_tier)
+        render_sprite(engine, -12, -56, 'virtual-signal/signal-lightning')
+        render_sprite(engine, 12, -56, 'virtual-signal/signal-' .. engine.tier)
+    end
 
     self:refuel(engine)
 end
 
----@param entity LuaEntity
-function Locomotive:destroyLocomotive(entity)
-    local surface, storage = This:locateSurface(entity.surface_index)
+---@param surface_index integer
+---@param entity_number integer
+function Locomotive:destroyLocomotive(surface_index, entity_number)
+    local surface, storage = This:locateSurface(surface_index)
 
-    if not surface.engines[entity.unit_number] then return end
+    if not surface.engines[entity_number] then return end
 
-    for _, sprite in pairs(surface.engines[entity.unit_number].sprites) do
+    for _, sprite in pairs(surface.engines[entity_number].sprites) do
         sprite.destroy()
     end
 
-    surface.engines[entity.unit_number] = nil
+    surface.engines[entity_number] = nil
     storage.total_engine_count = storage.total_engine_count - 1
+end
+
+---@param technology_prefix string
+---@return integer
+local function determine_tier(force_index, technology_prefix)
+    for idx = 5, 1, -1 do
+        local technology = assert(game.forces[force_index].technologies[technology_prefix .. idx])
+        if technology.enabled and technology.researched then return idx end
+    end
+
+    return 0
 end
 
 ---@param engine elok.Engine
 function Locomotive:refuel(engine)
     if not (engine and engine.entity and engine.entity.valid) then return end
 
+    local remaining_fuel
+    if engine.entity.burner.currently_burning then remaining_fuel = engine.entity.burner.remaining_burning_fuel end
+
+    local speed_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_speed_prefix)
+    local acceleration_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_acceleration_prefix)
+
+    -- assign the right fuel
+    engine.entity.burner.currently_burning = assert(prototypes.item[const:fuel_name(engine.tier, speed_tier, acceleration_tier)])
+
     local surface = This:locateSurface(engine.entity.surface_index)
     if table_size(surface.power_sources) > 0 then
-        engine.entity.burner.remaining_burning_fuel = engine.entity.burner.currently_burning.name.fuel_value
+        engine.entity.burner.remaining_burning_fuel = remaining_fuel or engine.entity.burner.currently_burning.name.fuel_value
+    else
+        engine.entity.burner.remaining_burning_fuel = 0
     end
 end
 
@@ -110,7 +131,10 @@ end
 ---@param values ff2.ticker.TickerContext
 local function ticker_unit_of_work(context, values)
     local engine = values.engine
-    if not (engine and engine.entity and engine.entity.valid) then return end
+    if not (engine and engine.entity and engine.entity.valid) then
+        This.Locomotive:destroyLocomotive(context.surface_index, context.engine)
+        return
+    end
 
     local burner = assert(engine.entity.burner)
     assert(burner.currently_burning)

@@ -15,16 +15,16 @@ local item = require('prototypes.item')
 local recipes = require('prototypes.recipe')
 local technology = require('prototypes.technology')
 
-entity:defaultEntities()
-item:defaultEntities()
-recipes:defaultRecipes()
-technology:defaultTechnology()
-
 local bob_logistics = Framework.settings:startup_setting('bobmods-logistics-trains')
 
 local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
 local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo) and not bob_logistics
 local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid) and not bob_logistics
+
+entity:defaultEntities()
+item:defaultEntities()
+recipes:defaultRecipes()
+technology:defaultTechnology(mk_engines)
 
 if mk_engines then
     entity:makeAdvancedEngines()
