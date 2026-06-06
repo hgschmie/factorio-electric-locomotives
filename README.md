@@ -40,6 +40,19 @@ Control stations are not tied to a specific tier, a standard control station can
 
 Standard Factorio wagons are clamped to the maximum speed that a Factorio locomotive can achieve and would slow down a train that is moved by a MK2 or MK3 locomotive. When enabled, the higher technology tiers will also enable matching cargo and fluid wagons.
 
+## Technology bonuses for speed and acceleration
+
+Regular locomotives can run faster and accelerate better when using different fuel. For electric locomotives, this can be matched by doing additional research into Electric Railway acceleration and Electric Railway speed.
+
+| Technology Level | Speed bonus (equal fuel)  |  Acceleration Bonus (equal fuel) |
+|------------------|---------------------------|----------------------------------|
+| (unresearched)   | 0% (Wood/Coal)            |  0% (Wood/Coal)                  |
+| Level 1          | 5% (Solid Fuel)           |  20% (Solid Fuel)                |
+| Level 2          | 10%                       |  50%                             |
+| Level 3          | 15% (Rocket/Nuclear Fuel) |  80% (Rocket Fuel)               |
+| Level 4          | 20%                       |  115%                            |
+| Level 5          | 25%                       |  150% (Nuclear Fuel)             |
+
 ## Settings
 
 ### Improved Locomotives (startup, default is `true`)

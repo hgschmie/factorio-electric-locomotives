@@ -1,8 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.0.1
+Version: 1.1.0
 Date: ????-??-??
   Changes:
-    - First release
+    - Add technology tiers for acceleration and speed.
+  Bugfixes:
+    - Documentation fixes
+    - Adjust cost for recipes and research
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2026-06-02
