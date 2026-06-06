@@ -3,10 +3,10 @@
 ------------------------------------------------------------------------
 
 data:extend {
-	{
-		type = 'item-subgroup',
-		name = 'electric-railway',
-		group = 'logistics',
-		order = 'ee',
-	},
+    {
+        type = 'item-subgroup',
+        name = 'electric-railway',
+        group = 'logistics',
+        order = 'ee',
+    },
 }

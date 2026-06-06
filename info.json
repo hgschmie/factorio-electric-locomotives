@@ -8,13 +8,13 @@
   "homepage": "https://github.com/hgschmie/factorio-electric-locomotives",
   "factorio_version": "2.0",
   "dependencies": [
-	"base >= 2.0",
-	"(?)boblogistics",
-	"(?)bobvehicleequipment",
+    "base >= 2.0",
+    "(?)boblogistics",
+    "(?)bobvehicleequipment",
     "(?)MultipleUnitTrainControl",
-	"! ElectricTrain2",
-	"! ElectricTrainFix",
-	"! ElectricTrainFix2"
+    "! ElectricTrain2",
+    "! ElectricTrainFix",
+    "! ElectricTrainFix2"
   ],
   "package": {
     "git_publish_branch": "main",
