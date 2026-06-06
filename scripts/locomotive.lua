@@ -103,11 +103,11 @@ function Locomotive:refuel(engine)
     local remaining_fuel
     if engine.entity.burner.currently_burning then remaining_fuel = engine.entity.burner.remaining_burning_fuel end
 
-    local speed_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_speed_prefix)
-    local acceleration_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_acceleration_prefix)
+    engine.speed_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_speed_prefix)
+    engine.acceleration_tier = engine.speed_tier or determine_tier(engine.entity.force_index, const.technology_acceleration_prefix)
 
     -- assign the right fuel
-    engine.entity.burner.currently_burning = assert(prototypes.item[const:fuel_name(engine.tier, speed_tier, acceleration_tier)])
+    engine.entity.burner.currently_burning = assert(prototypes.item[const:fuel_name(engine)])
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if table_size(surface.power_sources) > 0 then

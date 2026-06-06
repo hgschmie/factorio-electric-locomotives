@@ -100,7 +100,11 @@ local function make_fuel(index, speed_tier, acceleration_tier)
     local speed_factor = speed_tier and const.speed_progression[speed_tier]
     local acceleration_factor = acceleration_tier and const.acceleration_progression[acceleration_tier]
 
-    local name = const:fuel_name(index, speed_tier, acceleration_tier)
+    local name = const:fuel_name {
+        tier = index,
+        speed_tier = speed_tier,
+        acceleration_tier = acceleration_tier,
+    }
 
     ---@type data.ItemPrototype
     return {

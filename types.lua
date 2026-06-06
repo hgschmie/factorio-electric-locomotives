@@ -3,6 +3,11 @@
 -- class definitions
 ----------------------------------------------------------------------------------------------------
 
+---@class elok.TierConfig
+---@field tier integer
+---@field speed_tier integer?
+---@field acceleration_tier integer?
+
 ---@class elok.Engine
 ---@field entity LuaEntity
 ---@field sprites LuaRenderObject[]

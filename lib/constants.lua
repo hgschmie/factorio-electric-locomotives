@@ -181,30 +181,28 @@ Constants.tier_tint = {
 }
 
 Constants.speed_progression = {
-    [0] = 1.0,    -- Wood/Coal
-    [1] = 1.05,   -- Solid Fuel
+    [0] = 1.0,  -- Wood/Coal
+    [1] = 1.05, -- Solid Fuel
     [2] = 1.10,
-    [3] = 1.15,   -- Rocket Fuel / Nuclear Fuel
+    [3] = 1.15, -- Rocket Fuel / Nuclear Fuel
     [4] = 1.20,
     [5] = 1.25,
 }
 
 Constants.acceleration_progression = {
-    [0] = 1.0,  -- Wood/Coal
-    [1] = 1.2,  -- Solid Fuel
+    [0] = 1.0, -- Wood/Coal
+    [1] = 1.2, -- Solid Fuel
     [2] = 1.5,
-    [3] = 1.8,  -- Rocket Fuel
+    [3] = 1.8, -- Rocket Fuel
     [4] = 2.15,
-    [5] = 2.5,  -- Nuclear Fuel
+    [5] = 2.5, -- Nuclear Fuel
 }
 
----@param index integer
----@param speed_tier integer
----@param acceleration_tier integer
-function Constants:fuel_name(index, speed_tier, acceleration_tier)
-    return (speed_tier == 0 and acceleration_tier == 0)
-        and (Constants.fuel_prefix .. index)
-        or ('%s%d-s%d-a%d'):format(Constants.fuel_prefix, index, speed_tier, acceleration_tier)
+---@param engine elok.Engine|elok.TierConfig
+function Constants:fuel_name(engine)
+    return (engine.speed_tier == 0 and engine.acceleration_tier == 0)
+        and (Constants.fuel_prefix .. engine.tier)
+        or ('%s%d-s%d-a%d'):format(Constants.fuel_prefix, engine.tier, engine.speed_tier, engine.acceleration_tier)
 end
 
 return Constants

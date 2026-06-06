@@ -48,16 +48,7 @@ local electric_railway = {
         icon = const:png('technology/electric-railway'),
         icon_size = 256,
         enabled = false,
-        effects = {
-            {
-                type = 'unlock-recipe',
-                recipe = const.locomotive_prefix .. '2',
-            },
-            {
-                type = 'unlock-recipe',
-                recipe = const.control_station_prefix .. '2',
-            },
-        },
+        effects = {},
         prerequisites = {
             const.technology_prefix .. '1',
         },
@@ -78,16 +69,7 @@ local electric_railway = {
         icon = const:png('technology/electric-railway'),
         icon_size = 256,
         enabled = false,
-        effects = {
-            {
-                type = 'unlock-recipe',
-                recipe = const.locomotive_prefix .. '3',
-            },
-            {
-                type = 'unlock-recipe',
-                recipe = const.control_station_prefix .. '3',
-            },
-        },
+        effects = {},
         prerequisites = {
             const.technology_prefix .. '2',
         },
@@ -362,6 +344,11 @@ function Technology:defaultTechnology(mk_engines)
         -- only enable first tier, rest is done in advanced
         speed_tiers[1].enabled = true
         acceleration_tiers[1].enabled = true
+
+        data:extend {
+            speed_tiers[1],
+            acceleration_tiers[1],
+        }
     else
         for _, technology in pairs(speed_tiers) do
             technology.enabled = true
@@ -389,6 +376,8 @@ function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
     local names = mod_data.data.technology.advanced
 
     for idx = 2, 3 do
+        electric_railway[idx].enabled = true
+
         local effects = electric_railway[idx].effects
 
         if mk_engines then
