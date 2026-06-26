@@ -2,6 +2,7 @@
 -- Manage GUIs and GUI state -- loosely inspired by flib
 ------------------------------------------------------------------------
 assert(script)
+assert(Framework)
 
 local Event = require('stdlib.event.event')
 local Player = require('stdlib.event.player')
@@ -475,6 +476,7 @@ end
 local function register_events()
     -- register all gui events with the framework
     for name, id in pairs(defines.events) do
+        ---@diagnostic disable-next-line: undefined-field
         if name:starts_with('on_gui_') then
             Event.on_event(id, function(ev)
                 Framework.gui_manager:dispatch(ev --[[@as framework.gui.event_data]])
@@ -484,6 +486,7 @@ local function register_events()
 
     -- register all hotkey events for this mod from the framework
     for name in pairs(prototypes.custom_input) do
+        ---@diagnostic disable-next-line: undefined-field
         if name:starts_with(Framework.PREFIX) then
             Event.on_event(name, onCustomInputEvent)
         end
