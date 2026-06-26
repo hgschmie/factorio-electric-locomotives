@@ -2,7 +2,7 @@
 -- runtime code
 ------------------------------------------------------------------------
 
-require('lib.init')
+This, Framework = require('lib.init')()
 
 local Event = require('stdlib.event.event')
 local Matchers = require('framework.matchers')
