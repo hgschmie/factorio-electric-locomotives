@@ -37,7 +37,7 @@ if unlock_max_speed then
         for _, entity in pairs(data.raw[entity_type]) do
             -- there are some entities that are slower than a regular locomotive (e.g. cargo ships).
             -- don't touch those, they will not be connected to a "regular" train.
-            if entity.max_speed >= locomotive.max_speed then
+            if (entity.max_speed or 0) >= locomotive.max_speed then
                 entity.max_speed = math.max(max_speed_factor, entity.max_speed)
             end
         end
