@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.3
 Date: ????
-  Changes:
+  Bugfixes:
+    - 2.1 seems to clear burner.currently_burning when depleting energy completely. Reload the burner,
+      fixing a crash (reported by @nilskickshow on the forums. Thank you)
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.2
 Date: 2026-06-27

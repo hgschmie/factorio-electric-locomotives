@@ -86,6 +86,7 @@ local function make_engine(index, tier)
             fuel_categories = meld.overwrite { 'et-electric-fuel' },
             smoke = meld.delete(),
             emissions_per_minute = nil,
+            auto_refuel = false,
         },
     })
 end
