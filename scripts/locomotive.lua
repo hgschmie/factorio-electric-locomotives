@@ -137,7 +137,7 @@ local function ticker_unit_of_work(context, values)
     end
 
     local burner = assert(engine.entity.burner)
-    assert(burner.currently_burning)
+    burner.currently_burning = burner.currently_burning or assert(prototypes.item[const:fuel_name(engine)])
 
     local power_source = context.power_idx and context.power_sources[context.power_idx] or nil
 
