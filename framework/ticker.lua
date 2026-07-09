@@ -1,19 +1,27 @@
 --------------------------------------------------------------------------------
 -- Ticker and iterators
 --------------------------------------------------------------------------------
-
 assert(script)
+assert(Framework)
 
 -- Factorio Framework 2 (ff2)
 
+---@alias ff2.ticker.TickerStorage table<string, any>
 ---@alias ff2.ticker.TickerContext table<string, any>
 ---@alias ff2.ticker.TickerIteratorCallback fun(context: ff2.ticker.TickerContext, values: ff2.ticker.TickerContext): any?
 
 ---@class ff2.Ticker
 local Ticker = {}
 
-function Ticker.init()
-    storage.ticker = storage.ticker or {}
+---@param force boolean? If true, force reinit
+---@return ff2.ticker.TickerStorage state Manages undo/redo state
+function Ticker.state(force)
+    local state = Framework.runtime:storage()
+
+    ---@type ff2.ticker.TickerStorage
+    state.ticker = (state.ticker and not force) and state.ticker or {}
+
+    return state.ticker
 end
 
 ---@param ticker_id string
@@ -21,10 +29,13 @@ end
 function Ticker.getTicker(ticker_id)
     assert(ticker_id)
 
-    storage.ticker[ticker_id] = assert(storage.ticker)[ticker_id] or {}
-    storage.ticker[ticker_id].last_tick = storage.ticker[ticker_id].last_tick or game.tick
+    local state = Ticker.state()
 
-    return storage.ticker[ticker_id]
+
+    state[ticker_id] = state[ticker_id] or {}
+    state[ticker_id].last_tick = state[ticker_id].last_tick or game.tick
+
+    return state[ticker_id]
 end
 
 ---@param ticker_id string
