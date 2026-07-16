@@ -106,7 +106,7 @@ local function make_fuel(index, speed_tier, acceleration_tier)
         acceleration_tier = acceleration_tier,
     }
 
-    ---@type data.ItemPrototype
+    ---@type ItemPrototype
     return {
         --- PrototypeBase
         type = 'item',

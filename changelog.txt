@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: ????
+  Bugfixes:
+    - Fix crash when max_speed in the parent prototype is nil
   Changes:
+    - Support newer FMTK (changes for prototype classes)
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.3
 Date: 2026-07-05

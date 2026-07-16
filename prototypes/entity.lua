@@ -26,11 +26,32 @@ local mod_data = assert(data.raw['mod-data'][const.name])
 
 local Entity = {}
 
+---@param factor number
+---@return fun(value: number?): number?
+local function mult_factor(factor)
+    return function(value)
+        if not value then return nil end
+        return value * factor
+    end
+end
+
+---@param factor number
+---@return fun(value: number?): number?
+local function div_factor(factor)
+    return function(value)
+        if not value then return nil end
+        return value / factor
+    end
+end
+
 ---@param index integer
 ---@param tier string
----@return data.LocomotivePrototype
+---@return LocomotivePrototype
 local function make_engine(index, tier)
     local factor = const.tier_multipliers[index]
+    local factor_mult = mult_factor(factor)
+    local factor_div = div_factor(factor)
+
     local name = const.locomotive_prefix .. index
 
     local names = mod_data.data.locomotive[tier]
@@ -67,15 +88,15 @@ local function make_engine(index, tier)
         },
 
         -- EntityWithHealthPrototype
-        max_health = locomotive.max_health * factor,
+        max_health = factor_mult(locomotive.max_health),
 
         -- VehiclePrototype
-        braking_force = locomotive.braking_force * factor,
-        friction_force = locomotive.friction_force / factor,
+        braking_force = factor_mult(locomotive.braking_force),
+        friction_force = factor_div(locomotive.friction_force),
 
         -- RollingStockPrototype
-        max_speed = locomotive.max_speed * factor,
-        air_resistance = locomotive.air_resistance / factor,
+        max_speed = factor_mult(locomotive.max_speed),
+        air_resistance = factor_div(locomotive.air_resistance),
 
         -- LocomotivePrototype
         max_power = (MAX_POWER * factor) .. 'kW',
@@ -100,7 +121,7 @@ end
 
 ---@param index integer
 ---@param tier string
----@return data.ElectricEnergyInterfacePrototype
+---@return ElectricEnergyInterfacePrototype
 local function make_control_station(index, tier)
     local factor = const.tier_multipliers[index]
     local name = const.control_station_prefix .. index
@@ -199,13 +220,17 @@ end
 
 ---@param index integer
 ---@param tier string
----@return data.CargoWagonPrototype
+---@return CargoWagonPrototype
 local function make_cargo_wagon(index, tier)
     local factor = const.tier_multipliers[index]
+    local factor_mult = mult_factor(factor)
+    local factor_div = div_factor(factor)
+
     local name = const.cargo_wagon_prefix .. index
 
     local names = mod_data.data.cargo_wagon[tier]
     names[#names + 1] = name
+
 
     return meld(util.copy(cargo_wagon), {
         -- Prototype Base
@@ -226,28 +251,31 @@ local function make_cargo_wagon(index, tier)
         },
 
         -- EntityWithHealthPrototype
-        max_health = cargo_wagon.max_health * factor,
+        max_health = factor_mult(cargo_wagon.max_health),
 
         -- VehiclePrototype
-        braking_force = cargo_wagon.braking_force * factor,
-        friction_force = cargo_wagon.friction_force / factor,
+        braking_force = factor_mult(cargo_wagon.braking_force),
+        friction_force = factor_div(cargo_wagon.friction_force),
 
         -- RollingStockPrototype
-        weight = cargo_wagon.weight * factor,
-        max_speed = cargo_wagon.max_speed * factor,
-        air_resistance = cargo_wagon.air_resistance / factor,
+        weight = factor_mult(cargo_wagon.weight),
+        max_speed = factor_mult(cargo_wagon.max_speed),
+        air_resistance = factor_div(cargo_wagon.air_resistance),
 
         -- CargoWagonPrototype
-        inventory_size = cargo_wagon.inventory_size * factor,
+        inventory_size = factor_mult(cargo_wagon.inventory_size),
         quality_affects_inventory_size = true,
     })
 end
 
 ---@param index integer
 ---@param tier string
----@return data.FluidWagonPrototype
+---@return FluidWagonPrototype
 local function make_fluid_wagon(index, tier)
     local factor = const.tier_multipliers[index]
+    local factor_mult = mult_factor(factor)
+    local factor_div = div_factor(factor)
+
     local name = const.fluid_wagon_prefix .. index
 
     local names = mod_data.data.fluid_wagon[tier]
@@ -272,19 +300,19 @@ local function make_fluid_wagon(index, tier)
         },
 
         -- EntityWithHealthPrototype
-        max_health = fluid_wagon.max_health * factor,
+        max_health = factor_mult(fluid_wagon.max_health),
 
         -- VehiclePrototype
-        braking_force = fluid_wagon.braking_force * factor,
-        friction_force = fluid_wagon.friction_force / factor,
+        braking_force = factor_mult(fluid_wagon.braking_force),
+        friction_force = factor_div(fluid_wagon.friction_force),
 
         -- RollingStockPrototype
-        weight = fluid_wagon.weight * factor,
-        max_speed = fluid_wagon.max_speed * factor,
-        air_resistance = fluid_wagon.air_resistance / factor,
+        weight = factor_mult(fluid_wagon.weight),
+        max_speed = factor_mult(fluid_wagon.max_speed),
+        air_resistance = factor_div(fluid_wagon.air_resistance),
 
         -- FluidWagonPrototype
-        capacity = fluid_wagon.capacity * factor,
+        capacity = factor_mult(fluid_wagon.capacity),
         quality_affects_capacity = true,
     })
 end
