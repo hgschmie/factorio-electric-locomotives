@@ -121,6 +121,8 @@ The Control station graphic is the "Radio Tower" entity from [Hurricane046](http
 
 The transformer icon on the technology image and the item for the et-fuel items was taken from [Malcolm Riley](malcolmriley)'s [Github Repository of unused renders](https://github.com/malcolmriley/unused-renders). Distributed under [CC BY](https://creativecommons.org/licenses/by/4.0/). Thank you for sharing these graphics with the wider Factorio community.
 
+The electric engine sound was taken from the [SE Space Trains](https://mods.factorio.com/mod/se-space-trains) mods by [FragJacker](https://mods.factorio.com/user/FragJacker) which is distributed under MIT license.
+
 The thumbnail was created by Google Gemini.
 
 This mod was inspired by [Electric Train](https://mods.factorio.com/mod/ElectricTrain) and [Electric Train 2](https://mods.factorio.com/mod/ElectricTrain2). While it started out as a fork, no code or graphics remain.

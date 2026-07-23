@@ -2,6 +2,7 @@
 Version: 2.0.5
 Date: ????
   Changes:
+    - Add electric engine sound (from SE Space Train mod)
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 2026-07-16
