@@ -3,6 +3,8 @@ Version: 2.0.5
 Date: ????
   Changes:
     - Add electric engine sound (from SE Space Train mod)
+  Bugfixes:
+    - fix acceleration and speed progression based on the vaguest of bug reports from @3ara3ik on the forum
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 2026-07-16
