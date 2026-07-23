@@ -2,6 +2,8 @@
 -- entities
 ------------------------------------------------------------------------
 
+require('sound-util')
+
 local sounds = require('__base__.prototypes.entity.sounds')
 
 local util = require('util')
@@ -73,6 +75,21 @@ local function make_engine(index, tier)
         },
         minable = {
             result = name,
+        },
+
+        working_sound = meld.overwrite {
+            sound = {
+                filename = const:ogg('engine'),
+                volume = 0.4,
+                modifiers = {
+                    volume_multiplier('main-menu', 1.8),
+                    volume_multiplier('driving', 0.9),
+                    volume_multiplier('tips-and-tricks', 0.8),
+                },
+            },
+
+            match_speed_to_activity = true,
+            max_sounds_per_type = 2,
         },
 
         -- Vehicle Prototype

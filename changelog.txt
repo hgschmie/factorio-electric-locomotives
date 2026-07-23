@@ -5,6 +5,7 @@ Date: ????
     - Fix crash when max_speed in the parent prototype is nil
   Changes:
     - Backport 2.1 changes
+    - Add electric engine sound (from SE Space Train mod)
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 2026-06-05

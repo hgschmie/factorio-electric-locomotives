@@ -18,6 +18,7 @@ local Constants = {
 }
 
 Constants.gfx_location = Constants.root .. '/graphics/'
+Constants.sound_location = Constants.root .. '/sounds/'
 
 --------------------------------------------------------------------------------
 -- Framework intializer
@@ -49,6 +50,12 @@ end
 ---@return string result
 function Constants:png(path)
     return self.gfx_location .. path .. '.png'
+end
+
+---@param path string
+---@return string result
+function Constants:ogg(path)
+    return self.sound_location .. path .. '.ogg'
 end
 
 ---@param id string
