@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.1
-Date: ????
   Bugfixes:
     - Fix crash when max_speed in the parent prototype is nil
+    - fix acceleration and speed progression based on the vaguest of bug reports from @3ara3ik on the forum
   Changes:
     - Backport 2.1 changes
     - Add electric engine sound (from SE Space Train mod)
