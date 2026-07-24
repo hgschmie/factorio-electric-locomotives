@@ -1,5 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
+Date: 2026-07-23
   Bugfixes:
     - Fix crash when max_speed in the parent prototype is nil
     - fix acceleration and speed progression based on the vaguest of bug reports from @3ara3ik on the forum
