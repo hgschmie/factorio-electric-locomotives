@@ -2,6 +2,7 @@
 Version: 2.0.6
 Date: ????
   Changes:
+    - Only register locomotives that have prototypes for exclusion.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.5
 Date: 2026-07-23
@@ -37,6 +38,15 @@ Version: 2.0.0
 Date: 2026-06-24
   Changes:
     - Update to Factorio 2.1
+---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 2026-07-23
+  Bugfixes:
+    - Fix crash when max_speed in the parent prototype is nil
+    - fix acceleration and speed progression based on the vaguest of bug reports from @3ara3ik on the forum
+  Changes:
+    - Backport 2.1 changes
+    - Add electric engine sound (from SE Space Train mod)
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 2026-06-05

@@ -8,7 +8,9 @@ local const = require('lib.constants')
 local function exclude_locos(api_name)
     if remote.interfaces[api_name]['exclude_from_fuel_schedule'] then
         for _, loco_name in pairs(const.getLocomotiveNames()) do
-            remote.call(api_name, 'exclude_from_fuel_schedule', loco_name)
+            if prototypes.entity[loco_name] then
+                remote.call(api_name, 'exclude_from_fuel_schedule', loco_name)
+            end
         end
     end
 end
