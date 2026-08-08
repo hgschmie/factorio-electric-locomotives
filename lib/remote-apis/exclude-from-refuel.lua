@@ -16,6 +16,7 @@ local function exclude_locos(api_name)
 end
 
 local FuelTrainStop = {
+    on_load = exclude_locos,
     on_configuration_changed = exclude_locos,
 }
 

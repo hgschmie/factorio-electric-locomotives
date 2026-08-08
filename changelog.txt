@@ -3,6 +3,7 @@ Version: 2.0.6
 Date: ????
   Changes:
     - Only register locomotives that have prototypes for exclusion.
+    - Register exclusions on loading even if config_changed is not called.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.5
 Date: 2026-07-23
