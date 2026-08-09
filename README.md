@@ -53,6 +53,10 @@ Regular locomotives can run faster and accelerate better when using different fu
 | Level 4          | 20%                       |  115%                            |
 | Level 5          | 25%                       |  150% (Nuclear Fuel)             |
 
+## Console commands
+
+The `/electric-locomotives-show-levels` shows the current research levels for speed and acceleration and the bonus applied. If these values differ from the research shown in the technology tree, please file a bug report.
+
 ## Settings
 
 ### Improved Locomotives (startup, default is `true`)
@@ -127,7 +131,7 @@ The thumbnail was created by Google Gemini.
 
 This mod was inspired by [Electric Train](https://mods.factorio.com/mod/ElectricTrain) and [Electric Train 2](https://mods.factorio.com/mod/ElectricTrain2). While it started out as a fork, no code or graphics remain.
 
-The code was reviewed by AI coding agents. If you are fundamentally opposed to using AI tools to improve software quality, you are free to not install it.
+The code was partially written and reviewed by AI coding agents. If you are fundamentally opposed to using AI tools to develop software and improve software quality, you are free to not install it.
 
 ----
 (C) 2026 Henning Schmiedehausen (hgschmie). Released under [GPLv3](https://github.com/hgschmie/factorio-electric-locomotives/blob/main/LICENSE).

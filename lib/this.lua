@@ -10,6 +10,7 @@ Framework.settings:add_defaults(require('lib.settings'))
 ---@field remote_apis table<string, string>
 ---@field Locomotive elok.LocomotiveControl
 ---@field ControlStation elok.ControlStation
+---@field Console elok.Console
 local This = {
     other_mods = {
         ['bobvehicleequipment'] = 'bobvehicleequipment',
@@ -25,6 +26,7 @@ local This = {
 if (script) then
     This.Locomotive = require('scripts.locomotive')
     This.ControlStation = require('scripts.control-station')
+    This.Console = require('scripts.console')
 end
 
 ----------------------------------------------------------------------------------------------------

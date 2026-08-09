@@ -85,9 +85,10 @@ function Locomotive:destroyLocomotive(surface_index, entity_number)
     storage.total_engine_count = storage.total_engine_count - 1
 end
 
+---@param force_index integer
 ---@param technology_prefix string
 ---@return integer
-local function determine_tier(force_index, technology_prefix)
+function Locomotive:determineTier(force_index, technology_prefix)
     for idx = 5, 1, -1 do
         local technology = assert(game.forces[force_index].technologies[technology_prefix .. idx])
         if technology.enabled and technology.researched then return idx end
@@ -103,8 +104,8 @@ function Locomotive:refuel(engine)
     local remaining_fuel
     if engine.entity.burner.currently_burning then remaining_fuel = engine.entity.burner.remaining_burning_fuel end
 
-    engine.speed_tier = determine_tier(engine.entity.force_index, const.technology_speed_prefix)
-    engine.acceleration_tier = determine_tier(engine.entity.force_index, const.technology_acceleration_prefix)
+    engine.speed_tier = self:determineTier(engine.entity.force_index, const.technology_speed_prefix)
+    engine.acceleration_tier = self:determineTier(engine.entity.force_index, const.technology_acceleration_prefix)
 
     -- assign the right fuel
     engine.entity.burner.currently_burning = assert(prototypes.item[const:fuel_name(engine)])
