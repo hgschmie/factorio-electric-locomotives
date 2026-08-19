@@ -13,28 +13,13 @@ local table = require('stdlib.utils.table')
 
 local Constants = {
     prefix = 'hps__elok-',
+    log_prefix = 'Elok',
     name = 'electric-locomotives',
     root = '__electric-locomotives__',
 }
 
 Constants.gfx_location = Constants.root .. '/graphics/'
 Constants.sound_location = Constants.root .. '/sounds/'
-
---------------------------------------------------------------------------------
--- Framework intializer
---------------------------------------------------------------------------------
-
----@return FrameworkConfig config
-function Constants.framework_init()
-    return {
-        -- prefix is the internal mod prefix
-        prefix = Constants.prefix,
-        -- name is a human readable name
-        name = Constants.name,
-        -- The filesystem root.
-        root = Constants.root,
-    }
-end
 
 --------------------------------------------------------------------------------
 -- Path and name helpers

@@ -2,12 +2,12 @@
 --- Initialize this mod's globals
 ----------------------------------------------------------------------------------------------------
 
--- must be before any other code
-Framework.settings:add_defaults(require('lib.settings'))
+local const = require('lib.constants')
 
 ---@class elok.Mod
 ---@field other_mods table<string, string>
 ---@field remote_apis table<string, string>
+---@field settings ff2.ModSettings
 ---@field Locomotive elok.LocomotiveControl
 ---@field ControlStation elok.ControlStation
 ---@field Console elok.Console
@@ -21,15 +21,32 @@ local This = {
         FuelTrainStop = 'exclude-from-refuel',
         ['logistic-train-network'] = 'exclude-from-refuel',
     },
+    settings = require('lib.settings'),
 }
 
-if (script) then
+function This.boot()
     This.Locomotive = require('scripts.locomotive')
     This.ControlStation = require('scripts.control-station')
     This.Console = require('scripts.console')
 end
 
-----------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Framework intializer
+--------------------------------------------------------------------------------
+
+---@return FrameworkConfig config
+function This.framework_init()
+    return {
+        -- prefix is the internal mod prefix
+        prefix = const.prefix,
+        -- prefix for log messages
+        log_prefix = const.log_prefix,
+        -- name is a human readable name
+        name = const.name,
+        -- The filesystem root.
+        root = const.root,
+    }
+end
 
 ------------------------------------------------------------------------
 -- init setup
