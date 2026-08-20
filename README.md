@@ -119,7 +119,7 @@ All of those numbers can be adjusted:
 
 This mod would benefit from actual electric locomotive graphics. A "real" electric locomotive body would go a long way to make this mod more immersive. Same applies for the control station (but [Hurricane046](https://mods.factorio.com/user/hurricane046)'s Radio Tower does a good job here).
 
-## Legal & Credits
+## Credits
 
 The Control station graphic is the "Radio Tower" entity from [Hurricane046](https://mods.factorio.com/user/hurricane046)'s [Figma page](https://www.figma.com/proto/y1IQG08ZG2jIeJ5sTyF4MP/Factorio-Buildings?node-id=14934-304). Distributed under [CC BY](https://creativecommons.org/licenses/by/4.0/). Thank you for putting such high quality entities under a permissive license. I poked a tiny bit at it to create slighly different icons for the three item tiers.
 
@@ -131,7 +131,9 @@ The thumbnail was created by Google Gemini.
 
 This mod was inspired by [Electric Train](https://mods.factorio.com/mod/ElectricTrain) and [Electric Train 2](https://mods.factorio.com/mod/ElectricTrain2). While it started out as a fork, no code or graphics remain.
 
+## Legal & Copyright
+
 The code was partially written and reviewed by AI coding agents. If you are fundamentally opposed to using AI tools to develop software and improve software quality, you are free to not install it.
 
-----
-(C) 2026 Henning Schmiedehausen (hgschmie). Released under [GPLv3](https://github.com/hgschmie/factorio-electric-locomotives/blob/main/LICENSE).
+--------------------------------------------------
+Copyright (C) 2026 Henning Schmiedehausen (@hgschmie), licensed under the [GPLv3 license](https://github.com/hgschmie/factorio-electric-locomotives/blob/main/LICENSE).
