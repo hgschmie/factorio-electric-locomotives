@@ -142,7 +142,7 @@ local function ticker_unit_of_work(context, values)
     local power_source = context.power_idx and context.power_sources[context.power_idx] or nil
 
     repeat
-        if power_source and power_source.energy > 0.1 then
+        if power_source and power_source.valid and power_source.energy > 0.1 then
             local required_power = burner.currently_burning.name.fuel_value - burner.remaining_burning_fuel
             local available_power = math.min(power_source.energy, required_power)
 
@@ -158,7 +158,7 @@ local function ticker_unit_of_work(context, values)
         end
 
         context.power_idx, power_source = next(context.power_sources, context.power_idx)
-    until not (power_source and power_source.energy > 0.1)
+    until not (power_source and power_source.valid and power_source.energy > 0.1)
 
     if burner.remaining_burning_fuel < 0.1 then
         burner.remaining_burning_fuel = 0

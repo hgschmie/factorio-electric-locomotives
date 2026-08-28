@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix crash if a power station is invalid but still selected to power trains (Reported by @Chronosfear on the forum, thank you!)
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 2026-07-23
