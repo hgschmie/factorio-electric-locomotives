@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.8
-Date: ????
+Date: 2026-08-27
   Bugfixes:
     - Fix crash if a power station is invalid but still selected to power trains (Reported by @Chronosfear on the forum, thank you!)
 ---------------------------------------------------------------------------------------------------
