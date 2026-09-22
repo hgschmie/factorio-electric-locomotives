@@ -1,6 +1,6 @@
 {
   "name": "electric-locomotives",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "title": "Electric Locomotives",
   "description": "Adds multiple tiers of electric locomotives",
   "author": "hgschmie",
@@ -8,7 +8,7 @@
   "homepage": "https://github.com/hgschmie/factorio-electric-locomotives",
   "factorio_version": "2.1",
   "dependencies": [
-    "base >= 2.1.7",
+    "base >= 2.1.20",
     "(?)boblogistics",
     "(?)bobvehicleequipment",
     "(?)MultipleUnitTrainControl",

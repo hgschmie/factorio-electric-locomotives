@@ -118,7 +118,9 @@ local function make_fuel(index, speed_tier, acceleration_tier)
         stack_size = 1,
         icon = const:png('item/part-electronic-transformer-1'),
         icon_size = 64,
-        fuel_category = 'et-electric-fuel',
+        fuel_categories = {
+            'et-electric-fuel',
+        },
         flags = {
             'hide-from-bonus-gui',
             'hide-from-fuel-tooltip',
