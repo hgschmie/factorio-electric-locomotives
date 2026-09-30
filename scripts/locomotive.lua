@@ -113,7 +113,9 @@ function Locomotive:refuel(engine)
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if table_size(surface.power_sources) > 0 then
-        engine.entity.burner.remaining_burning_fuel = remaining_fuel or engine.entity.burner.currently_burning.name.fuel_value
+        -- burner.currently_burning is a ItemIDAndQualityIDPair when read.
+        -- burner.currently_burning.name is a LuaItemPrototype when read.
+        burner.remaining_burning_fuel = remaining_fuel or burner.currently_burning.name.fuel_value
     else
         burner.remaining_burning_fuel = 0
     end
