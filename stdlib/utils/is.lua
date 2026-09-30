@@ -234,7 +234,7 @@ M.int32 = M.Int32
 -- @tparam mixed var The variable to check
 -- @treturn mixed
 function M.Unsigned(var)
-    return Is.Number(var) and (var < huge and var >= 0) and var
+    return M.Number(var) and (var < huge and var >= 0) and var
 end
 M.unsigned = M.Unsigned
 
@@ -430,7 +430,8 @@ setmetatable(
         end,
         __call = function(_, ...)
             local param = { ... }
-            local _level = tonumber(param[3]) or 3 --[[@as integer]]
+            local _level = tonumber(param[3]) or 3
+            ---@cast _level integer
             return param[1] or error(type(param[2]) == 'function' and safe_invoke(param[2]) or param[2] or 'assertion failed', _level)
         end
     }
@@ -448,7 +449,8 @@ setmetatable(
         end,
         __call = function(_, ...)
             local param = { ... }
-            local _level = tonumber(param[3]) or 3 --[[@as integer]]
+            local _level = tonumber(param[3]) or 3
+            ---@cast _level integer
             return not param[1] or error(type(param[2]) == 'function' and safe_invoke(param[2]) or param[2] or 'assertion failed', _level)
         end
     }
