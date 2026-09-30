@@ -124,6 +124,7 @@ end
 ---@param engine elok.Engine
 function Locomotive:deplete(engine)
     if not (engine and engine.entity and engine.entity.valid) then return end
+    local burner = assert(engine.entity.burner)
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if not next(surface.power_sources) then
