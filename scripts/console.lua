@@ -15,7 +15,7 @@ local Console = {}
 ---@param player LuaPlayer?
 ---@param force  LuaForce?
 local function print_research(player, force)
-    force = assert(force or (player and player.force or nil))
+    force = assert(force or (player and player.force --[[@as LuaForce]] or nil))
     local speed_tier = This.Locomotive:determineTier(force.index, const.technology_speed_prefix)
     local acceleration_tier = This.Locomotive:determineTier(force.index, const.technology_acceleration_prefix)
 
@@ -47,7 +47,7 @@ local function show_levels(data)
     end
 end
 
-function Console:register_commands()
+function Console.register_commands()
     commands.add_command('electric-locomotives-show-levels', { const:locale('command_show_levels') }, show_levels)
 end
 
@@ -56,11 +56,11 @@ end
 --------------------------------------------------------------------------------
 
 local function on_init()
-    Console:register_commands()
+    Console.register_commands()
 end
 
 local function on_load()
-    Console:register_commands()
+    Console.register_commands()
 end
 
 Event.on_init(on_init)

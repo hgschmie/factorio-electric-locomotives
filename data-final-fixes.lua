@@ -23,15 +23,15 @@ if unlock_max_speed then
     -- Entities that either can not run at full speed or run faster than the fastest electric
     -- locomotive are not touched
     local locomotive = data.raw['locomotive']['locomotive']
-    local max_speed_factor = locomotive.max_speed
+    local max_speed_factor = assert(locomotive.max_speed)
 
     for idx = 1, 3 do
         local loco_prototype = data.raw['locomotive'][const.locomotive_prefix .. idx]
-        if loco_prototype then max_speed_factor = math.max(max_speed_factor, loco_prototype.max_speed) end
+        if loco_prototype then max_speed_factor = math.max(max_speed_factor, assert(loco_prototype.max_speed)) end
     end
 
     -- scale to max bonus speed progression
-    max_speed_factor = max_speed_factor * const.speed_progression[#const.speed_progression]
+    max_speed_factor = max_speed_factor * assert(const.speed_progression[#const.speed_progression])
 
     for _, entity_type in pairs(WAGON_TYPES) do
         for _, entity in pairs(data.raw[entity_type]) do

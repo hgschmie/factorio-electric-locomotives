@@ -27,7 +27,7 @@ local function on_control_station_created(event)
     local entity = event.entity
     if not (entity and entity.valid) then return end
 
-    This.ControlStation:createControlStation(event.entity)
+    This.ControlStation.createControlStation(event.entity)
 end
 
 ---@param event EventData.on_player_mined_entity | EventData.on_robot_mined_entity | EventData.on_space_platform_mined_entity | EventData.script_raised_destroy
@@ -35,7 +35,7 @@ local function on_locomotive_removed(event)
     local entity = event.entity
     if not (entity and entity.valid) then return end
 
-    This.Locomotive:destroyLocomotive(event.entity.surface_index, event.entity.unit_number)
+    This.Locomotive:destroyLocomotive(entity.surface_index, entity.unit_number)
 end
 
 ---@param event EventData.on_player_mined_entity | EventData.on_robot_mined_entity | EventData.on_space_platform_mined_entity | EventData.script_raised_destroy
@@ -43,7 +43,7 @@ local function on_control_station_removed(event)
     local entity = event.entity
     if not (entity and entity.valid) then return end
 
-    This.ControlStation:destroyControlStation(event.entity)
+    This.ControlStation.destroyControlStation(event.entity)
 end
 
 local function resync_state()
@@ -63,7 +63,7 @@ local function resync_state()
 
         -- register the control stations
         for _, control_station in pairs(control_stations) do
-            This.ControlStation:createControlStation(control_station)
+            This.ControlStation.createControlStation(control_station)
         end
 
         local engines = surface.find_entities_filtered {

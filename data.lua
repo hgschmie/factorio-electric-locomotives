@@ -15,36 +15,42 @@ local item = require('prototypes.item')
 local recipes = require('prototypes.recipe')
 local technology = require('prototypes.technology')
 
-local bob_logistics = Framework.settings:startup_setting('bobmods-logistics-trains')
+local bob_logistics = Framework.settings:startup_setting('bobmods-logistics-trains') or false
+---@cast bob_logistics boolean
 
-local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train)
+local mk_engines = assert(Framework.settings:startup_setting(const.settings_names.enable_train))
+---@cast mk_engines boolean
+
 local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo) and not bob_logistics
+---@cast mk_cargo boolean
+
 local mk_fluid = Framework.settings:startup_setting(const.settings_names.enable_fluid) and not bob_logistics
+---@cast mk_fluid boolean
 
 entity:defaultEntities()
 item:defaultEntities()
 recipes:defaultRecipes()
-technology:defaultTechnology(mk_engines)
+technology.defaultTechnology(mk_engines)
 
 if mk_engines then
-    entity:makeAdvancedEngines()
-    item:makeAdvancedEngines()
-    recipes:unlockAdvancedEngines()
+    entity.makeAdvancedEngines()
+    item.makeAdvancedEngines()
+    recipes.unlockAdvancedEngines()
 end
 
 if mk_cargo then
-    entity:makeCargoWagons()
-    item:makeCargoWagons()
-    recipes:unlockCargoWagons()
+    entity.makeCargoWagons()
+    item.makeCargoWagons()
+    recipes.unlockCargoWagons()
 end
 
 if mk_fluid then
-    entity:makeFluidWagons()
-    item:makeFluidWagons()
-    recipes:unlockFluidWagons()
+    entity.makeFluidWagons()
+    item.makeFluidWagons()
+    recipes.unlockFluidWagons()
 end
 
-technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
+technology.unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
 
 ------------------------------------------------------------------------
 

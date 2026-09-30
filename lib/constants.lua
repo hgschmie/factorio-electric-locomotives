@@ -46,7 +46,7 @@ end
 ---@param id string
 ---@return string result
 function Constants:locale(id)
-    return Constants:with_prefix('locale.') .. id
+    return self:with_prefix('locale.') .. id
 end
 
 --------------------------------------------------------------------------------
@@ -78,7 +78,6 @@ end
 Constants.locomotive_ticker_name = 'locomotive_refresh'
 Constants.locomotive_ticker_context_field = 'last_tick_context'
 
-
 --------------------------------------------------------------------------------
 -- entity names and maps
 --------------------------------------------------------------------------------
@@ -109,9 +108,11 @@ local cache = {}
 ---@field enable_advanced fun(): boolean
 
 ---@param args elok.MakeNamesArgs
+---@return fun(): string[]
 local function make_names(args)
-    ---@type table<string, elok.Names>
     local mod_data = assert(prototypes.mod_data[Constants.name]).data
+    ---@cast mod_data table<string, elok.Names>
+
     local data = assert(mod_data[args.name])
 
     return function()
@@ -134,27 +135,32 @@ if script then
 
     Constants.getLocomotiveNames = make_names {
         name = 'locomotive',
+        ---@diagnostic disable-next-line: return-type-mismatch
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_train) end,
     }
 
     Constants.getControlStationNames = make_names {
         name = 'control_station',
+        ---@diagnostic disable-next-line: return-type-mismatch
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_train) end,
     }
 
     Constants.getCargoWagonNames = make_names {
         name = 'cargo_wagon',
+        ---@diagnostic disable-next-line: return-type-mismatch
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_cargo) end,
     }
 
     Constants.getFluidWagonNames = make_names {
         name = 'fluid_wagon',
+        ---@diagnostic disable-next-line: return-type-mismatch
         enable_advanced = function() return Framework.settings:startup_setting(Constants.settings_names.enable_fluid) end,
     }
 
     Constants.getTechnologyNames = make_names {
         name = 'technology',
         enable_advanced = function()
+            ---@diagnostic disable-next-line: return-type-mismatch
             return Framework.settings:startup_setting(Constants.settings_names.enable_train)
                 or Framework.settings:startup_setting(Constants.settings_names.enable_cargo)
                 or Framework.settings:startup_setting(Constants.settings_names.enable_fluid)
@@ -162,6 +168,7 @@ if script then
     }
 end
 
+---@type number[]
 Constants.tier_multipliers = {
     1, 1.5, 2,
 }
@@ -193,8 +200,8 @@ Constants.acceleration_progression = {
 ---@param engine elok.Engine|elok.TierConfig
 function Constants:fuel_name(engine)
     return (engine.speed_tier == 0 and engine.acceleration_tier == 0)
-        and (Constants.fuel_prefix .. engine.tier)
-        or ('%s%d-s%d-a%d'):format(Constants.fuel_prefix, engine.tier, engine.speed_tier, engine.acceleration_tier)
+        and (self.fuel_prefix .. engine.tier)
+        or ('%s%d-s%d-a%d'):format(self.fuel_prefix, engine.tier, engine.speed_tier, engine.acceleration_tier)
 end
 
 return Constants

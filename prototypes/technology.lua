@@ -334,7 +334,7 @@ local Technology = {}
 
 local mod_data = assert(data.raw['mod-data'][const.name])
 
-function Technology:defaultTechnology(mk_engines)
+function Technology.defaultTechnology(mk_engines)
     local names = mod_data.data.technology.base
     names[#names + 1] = electric_railway[1].name
 
@@ -370,12 +370,13 @@ end
 ---@param mk_engines boolean
 ---@param mk_cargo boolean
 ---@param mk_fluid boolean
-function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
+function Technology.unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
     if not (mk_engines or mk_cargo or mk_fluid) then return end
 
     local names = mod_data.data.technology.advanced
 
     for idx = 2, 3 do
+        assert(electric_railway[idx])
         electric_railway[idx].enabled = true
 
         local effects = electric_railway[idx].effects
@@ -410,6 +411,9 @@ function Technology:unlockAdvancedTiers(mk_engines, mk_cargo, mk_fluid)
 
     if mk_engines then
         for idx = 2, 5 do
+            assert(speed_tiers[idx])
+            assert(acceleration_tiers[idx])
+
             if idx < 4 then
                 speed_tiers[idx].prerequisites[#speed_tiers[idx].prerequisites + 1] = const.technology_prefix .. idx
                 acceleration_tiers[idx].prerequisites[#acceleration_tiers[idx].prerequisites + 1] = const.technology_prefix .. idx

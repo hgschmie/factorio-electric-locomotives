@@ -8,7 +8,7 @@ assert(script)
 local ControlStation = {}
 
 ---@param control_station LuaEntity
-function ControlStation:createControlStation(control_station)
+function ControlStation.createControlStation(control_station)
     local surface, storage = This:locateSurface(control_station.surface_index)
 
     if surface.power_sources[control_station.unit_number] then return end
@@ -25,7 +25,7 @@ function ControlStation:createControlStation(control_station)
 end
 
 ---@param control_station LuaEntity
-function ControlStation:destroyControlStation(control_station)
+function ControlStation.destroyControlStation(control_station)
     local surface, storage = This:locateSurface(control_station.surface_index)
 
     if not surface.power_sources[control_station.unit_number] then return end

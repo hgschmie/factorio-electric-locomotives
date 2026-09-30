@@ -6,7 +6,7 @@ local const = require('lib.constants')
 
 local Recipes = {}
 
-function Recipes:defaultRecipes()
+function Recipes.defaultRecipes()
     local electric_locomotive_1 = {
         type = 'recipe',
         name = const.locomotive_prefix .. '1',
@@ -58,7 +58,7 @@ function Recipes:defaultRecipes()
     }
 end
 
-function Recipes:unlockAdvancedEngines()
+function Recipes.unlockAdvancedEngines()
     local electric_locomotive_2 = {
         type = 'recipe',
         name = const.locomotive_prefix .. '2',
@@ -131,7 +131,7 @@ function Recipes:unlockAdvancedEngines()
     }
 end
 
-function Recipes:unlockCargoWagons()
+function Recipes.unlockCargoWagons()
     local cargo_wagon_2 = {
         type = 'recipe',
         name = const.cargo_wagon_prefix .. '2',
@@ -168,7 +168,7 @@ function Recipes:unlockCargoWagons()
     }
 end
 
-function Recipes:unlockFluidWagons()
+function Recipes.unlockFluidWagons()
     local fluid_wagon_2 = {
         type = 'recipe',
         name = const.fluid_wagon_prefix .. '2',

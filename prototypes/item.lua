@@ -12,7 +12,8 @@ local cargo_wagon = data.raw['item-with-entity-data']['cargo-wagon']
 local fluid_wagon = data.raw['item-with-entity-data']['fluid-wagon']
 
 -- how many ticks must a control station support
-local TICK_FACTOR = Framework.settings:startup_setting(const.settings_names.tick_interval)
+local TICK_FACTOR = assert(Framework.settings:startup_setting(const.settings_names.tick_interval))
+---@cast TICK_FACTOR integer
 
 -- At full acceleration, a type 1 loco burns 10kJ per tick
 -- a fuel item lasts ~ 20 ticks before refuel, so if it runs out of
@@ -95,7 +96,7 @@ local current_collector = {
 ---@param speed_tier integer
 ---@param acceleration_tier integer
 local function make_fuel(index, speed_tier, acceleration_tier)
-    local factor = const.tier_multipliers[index]
+    local factor = assert(const.tier_multipliers[index])
 
     local speed_factor = speed_tier and const.speed_progression[speed_tier]
     local acceleration_factor = acceleration_tier and const.acceleration_progression[acceleration_tier]
@@ -106,7 +107,7 @@ local function make_fuel(index, speed_tier, acceleration_tier)
         acceleration_tier = acceleration_tier,
     }
 
-    ---@type ItemPrototype
+    ---@type data.ItemPrototype
     return {
         --- PrototypeBase
         type = 'item',
@@ -149,7 +150,7 @@ end
 
 local Item = {}
 
-function Item:defaultEntities()
+function Item.defaultEntities()
     data:extend {
         et_fuel_category,
         current_collector,
@@ -168,7 +169,7 @@ function Item:defaultEntities()
     data:extend(fuel)
 end
 
-function Item:makeAdvancedEngines()
+function Item.makeAdvancedEngines()
     for idx = 2, 3 do
         data:extend {
             make_engine(idx),
@@ -185,14 +186,14 @@ function Item:makeAdvancedEngines()
     end
 end
 
-function Item:makeCargoWagons()
+function Item.makeCargoWagons()
     data:extend {
         make_cargo_wagon(2),
         make_cargo_wagon(3),
     }
 end
 
-function Item:makeFluidWagons()
+function Item.makeFluidWagons()
     data:extend {
         make_fluid_wagon(2),
         make_fluid_wagon(3),

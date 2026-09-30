@@ -19,7 +19,8 @@ local locomotive = data.raw['locomotive']['locomotive']
 local MAX_POWER = locomotive.max_power:sub(locomotive.max_power:find('%d+'))
 
 -- how many locos should a control station support at full load
-local LOCOS_PER_TIER = Framework.settings:startup_setting(const.settings_names.engines_per_control_station)
+local LOCOS_PER_TIER = assert(Framework.settings:startup_setting(const.settings_names.engines_per_control_station))
+---@cast LOCOS_PER_TIER integer
 
 -- at full acceleration, a base loco pulls 600kW, which is 10kJ/tick
 loco_consumption_per_tick = MAX_POWER / 60 -- global to use in items
@@ -48,9 +49,9 @@ end
 
 ---@param index integer
 ---@param tier string
----@return LocomotivePrototype
+---@return data.LocomotivePrototype
 local function make_engine(index, tier)
-    local factor = const.tier_multipliers[index]
+    local factor = assert(const.tier_multipliers[index])
     local factor_mult = mult_factor(factor)
     local factor_div = div_factor(factor)
 
@@ -138,9 +139,9 @@ end
 
 ---@param index integer
 ---@param tier string
----@return ElectricEnergyInterfacePrototype
+---@return data.ElectricEnergyInterfacePrototype
 local function make_control_station(index, tier)
-    local factor = const.tier_multipliers[index]
+    local factor = assert(const.tier_multipliers[index])
     local name = const.control_station_prefix .. index
 
     local names = mod_data.data.control_station[tier]
@@ -237,9 +238,9 @@ end
 
 ---@param index integer
 ---@param tier string
----@return CargoWagonPrototype
+---@return data.CargoWagonPrototype
 local function make_cargo_wagon(index, tier)
-    local factor = const.tier_multipliers[index]
+    local factor = assert(const.tier_multipliers[index])
     local factor_mult = mult_factor(factor)
     local factor_div = div_factor(factor)
 
@@ -287,9 +288,9 @@ end
 
 ---@param index integer
 ---@param tier string
----@return FluidWagonPrototype
+---@return data.FluidWagonPrototype
 local function make_fluid_wagon(index, tier)
-    local factor = const.tier_multipliers[index]
+    local factor = assert(const.tier_multipliers[index])
     local factor_mult = mult_factor(factor)
     local factor_div = div_factor(factor)
 
@@ -334,14 +335,14 @@ local function make_fluid_wagon(index, tier)
     })
 end
 
-function Entity:defaultEntities()
+function Entity.defaultEntities()
     data:extend {
         make_engine(1, 'base'),
         make_control_station(1, 'base'),
     }
 end
 
-function Entity:makeAdvancedEngines()
+function Entity.makeAdvancedEngines()
     data:extend {
         make_engine(2, 'advanced'),
         make_control_station(2, 'advanced'),
@@ -351,14 +352,14 @@ function Entity:makeAdvancedEngines()
     }
 end
 
-function Entity:makeCargoWagons()
+function Entity.makeCargoWagons()
     data:extend {
         make_cargo_wagon(2, 'advanced'),
         make_cargo_wagon(3, 'advanced'),
     }
 end
 
-function Entity:makeFluidWagons()
+function Entity.makeFluidWagons()
     data:extend {
         make_fluid_wagon(2, 'advanced'),
         make_fluid_wagon(3, 'advanced'),

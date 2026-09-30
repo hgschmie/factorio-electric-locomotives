@@ -16,8 +16,8 @@
 ---@field acceleration_tier integer?
 
 ---@class elok.Surface
----@field engines table<integer, elok.Engine>
----@field power_sources table<integer, LuaEntity>
+---@field engines table<uint64, elok.Engine>
+---@field power_sources table<uint64, LuaEntity>
 
 ---@class elok.Storage
 ---@field total_engine_count integer

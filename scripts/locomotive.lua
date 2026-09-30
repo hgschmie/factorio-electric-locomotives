@@ -27,7 +27,7 @@ local function render_sprite(engine, x, y, sprite)
         target = {
             entity = engine.entity,
             offset = util.by_pixel(x, y),
-        },
+        } --[[@as ScriptRenderTargetTable]],
         x_scale = 0.75,
         y_scale = 0.75,
         only_in_alt_mode = not Locomotive.show_icons,
@@ -38,7 +38,7 @@ local function render_sprite(engine, x, y, sprite)
         target = {
             entity = engine.entity,
             offset = util.by_pixel(x, y),
-        },
+        } --[[@as ScriptRenderTargetTable]],
         surface = engine.entity.surface,
         x_scale = 0.80,
         y_scale = 0.80,
@@ -71,11 +71,11 @@ function Locomotive:createLocomotive(entity)
 end
 
 ---@param surface_index integer
----@param entity_number integer
+---@param entity_number uint64?
 function Locomotive:destroyLocomotive(surface_index, entity_number)
     local surface, storage = This:locateSurface(surface_index)
 
-    if not surface.engines[entity_number] then return end
+    if not (entity_number and surface.engines[entity_number]) then return end
 
     for _, sprite in pairs(surface.engines[entity_number].sprites) do
         sprite.destroy()
@@ -102,19 +102,20 @@ function Locomotive:refuel(engine)
     if not (engine and engine.entity and engine.entity.valid) then return end
 
     local remaining_fuel
-    if engine.entity.burner.currently_burning then remaining_fuel = engine.entity.burner.remaining_burning_fuel end
+    local burner = assert(engine.entity.burner)
+    if burner.currently_burning then remaining_fuel = burner.remaining_burning_fuel end
 
     engine.speed_tier = self:determineTier(engine.entity.force_index, const.technology_speed_prefix)
     engine.acceleration_tier = self:determineTier(engine.entity.force_index, const.technology_acceleration_prefix)
 
     -- assign the right fuel
-    engine.entity.burner.currently_burning = assert(prototypes.item[const:fuel_name(engine)])
+    burner.currently_burning = assert(prototypes.item[const:fuel_name(engine)])
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if table_size(surface.power_sources) > 0 then
         engine.entity.burner.remaining_burning_fuel = remaining_fuel or engine.entity.burner.currently_burning.name.fuel_value
     else
-        engine.entity.burner.remaining_burning_fuel = 0
+        burner.remaining_burning_fuel = 0
     end
 end
 
@@ -124,13 +125,14 @@ function Locomotive:deplete(engine)
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if not next(surface.power_sources) then
-        engine.entity.burner.remaining_burning_fuel = 0
+        burner.remaining_burning_fuel = 0
     end
 end
 
 ---@param context ff2.ticker.TickerContext
 ---@param values ff2.ticker.TickerContext
 local function ticker_unit_of_work(context, values)
+    ---@type elok.Engine
     local engine = values.engine
     if not (engine and engine.entity and engine.entity.valid) then
         This.Locomotive:destroyLocomotive(context.surface_index, context.engine)
