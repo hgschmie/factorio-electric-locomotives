@@ -113,9 +113,7 @@ function Locomotive:refuel(engine)
 
     local surface = This:locateSurface(engine.entity.surface_index)
     if table_size(surface.power_sources) > 0 then
-        -- burner.currently_burning is a ItemIDAndQualityIDPair when read.
-        -- burner.currently_burning.name is a LuaItemPrototype when read.
-        burner.remaining_burning_fuel = remaining_fuel or burner.currently_burning.name.fuel_value
+        burner.remaining_burning_fuel = remaining_fuel or (burner.currently_burning and burner.currently_burning.name.fuel_value or 0)
     else
         burner.remaining_burning_fuel = 0
     end
@@ -130,6 +128,13 @@ function Locomotive:deplete(engine)
     if not next(surface.power_sources) then
         burner.remaining_burning_fuel = 0
     end
+end
+
+---@param burner LuaBurner
+---@return number required_power
+local function compute_required_power(burner)
+    if not burner.currently_burning then return 0 end
+    return burner.currently_burning.name.fuel_value and (burner.currently_burning.name.fuel_value - burner.remaining_burning_fuel) or 0
 end
 
 ---@param context ff2.ticker.TickerContext
@@ -149,7 +154,7 @@ local function ticker_unit_of_work(context, values)
 
     repeat
         if power_source and power_source.valid and power_source.energy > 0.1 then
-            local required_power = burner.currently_burning.name.fuel_value - burner.remaining_burning_fuel
+            local required_power = compute_required_power(burner)
             local available_power = math.min(power_source.energy, required_power)
 
             if available_power > 0.1 then
@@ -157,7 +162,7 @@ local function ticker_unit_of_work(context, values)
                 power_source.energy = power_source.energy - available_power
                 burner.remaining_burning_fuel = burner.remaining_burning_fuel + available_power
 
-                required_power = burner.currently_burning.name.fuel_value - burner.remaining_burning_fuel
+                required_power = compute_required_power(burner)
             end
 
             if required_power < 0.1 then return end
