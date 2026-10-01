@@ -366,8 +366,8 @@ end
 M.valid = M.Valid
 
 --- Returns true if the passed variable is a callable function.
--- @tparam mixed var The variable to check
--- @treturn boolean true if the passed variable is a callable function
+---@param var any The variable to check
+---@return boolean result True if the passed variable is a callable function
 function M.Callable(var)
     return type(var) == 'function' or type((getmetatable(var) or {}).__call) == 'function'
 end
