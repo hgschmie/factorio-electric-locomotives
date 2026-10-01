@@ -18,7 +18,7 @@ local technology = require('prototypes.technology')
 local bob_logistics = Framework.settings:startup_setting('bobmods-logistics-trains') or false
 ---@cast bob_logistics boolean
 
-local mk_engines = assert(Framework.settings:startup_setting(const.settings_names.enable_train))
+local mk_engines = Framework.settings:startup_setting(const.settings_names.enable_train) or false
 ---@cast mk_engines boolean
 
 local mk_cargo = Framework.settings:startup_setting(const.settings_names.enable_cargo) and not bob_logistics
