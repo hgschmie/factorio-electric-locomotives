@@ -12,12 +12,16 @@ local inspect = _ENV.inspect
 --- Return a valid player object from event, index, string, or userdata
 -- @tparam string|number|LuaPlayer|event mixed
 -- @treturn LuaPlayer a valid player or nil
+---@param mixed (integer|string|LuaPlayer|EventData)? the player index to get data for
+---@return LuaPlayer? player_instance the player instance
 function Game.get_player(mixed)
     if type(mixed) == 'table' then
+        ---@cast mixed table<string, uint32|string>
         if mixed.player_index then
             return game.get_player(mixed.player_index)
         elseif mixed.__self then
-            return mixed.valid and mixed
+            ---@cast mixed LuaPlayer
+            return mixed.valid and mixed or nil
         end
     elseif mixed then
         return game.get_player(mixed)
