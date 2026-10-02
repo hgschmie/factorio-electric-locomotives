@@ -129,6 +129,7 @@ local function make_names(args)
     end
 end
 
+---@diagnostic disable-next-line: unnecessary-if
 if script then
     -- methods are only available at runtime as the values are
     -- controlled by enabled technologies etc.

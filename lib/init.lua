@@ -13,6 +13,7 @@ if this.settings then
     framework.settings:add_defaults(this.settings)
 end
 
+---@diagnostic disable-next-line: unnecessary-if
 if script then
     this.boot()
 end

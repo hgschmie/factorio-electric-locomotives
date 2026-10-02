@@ -7,7 +7,7 @@ local const = require('lib.constants')
 ---@class elok.Mod
 ---@field other_mods table<string, string>
 ---@field remote_apis table<string, string>
----@field settings ff2.ModSettings
+---@field settings ff2.ModSettings?
 ---@field Locomotive elok.LocomotiveControl
 ---@field ControlStation elok.ControlStation
 ---@field Console elok.Console
@@ -56,6 +56,7 @@ end
 function This:init()
     assert(script)
 
+    ---@diagnostic disable-next-line: unnecessary-if
     if storage.elok_data then return end
 
     ---@type elok.Storage
@@ -72,6 +73,7 @@ end
 
 ---@return elok.Storage
 function This:storage()
+    ---@diagnostic disable-next-line: missing-return-value
     return assert(storage.elok_data)
 end
 

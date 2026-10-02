@@ -22,7 +22,7 @@ if unlock_max_speed then
     -- to be able to run after the fastest electric locomotive and not slow the train down.
     -- Entities that either can not run at full speed or run faster than the fastest electric
     -- locomotive are not touched
-    local locomotive = data.raw['locomotive']['locomotive']
+    local locomotive = assert(data.raw['locomotive']['locomotive'])
     local max_speed_factor = assert(locomotive.max_speed)
 
     for idx = 1, 3 do

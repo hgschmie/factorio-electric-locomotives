@@ -24,6 +24,9 @@
 ---@field total_control_station_count integer
 ---@field surfaces table<integer, elok.Surface>
 
+---@class elok.ModData
+---@field data table<string, elok.Names>
+
 ---@class elok.Names
 ---@field base string[]
 ---@field advanced string[]

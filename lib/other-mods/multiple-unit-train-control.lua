@@ -15,7 +15,9 @@ return {
         -- entities are added by the MultipleUnitTrainControl mod.
 
         local mod_data = assert(data.raw['mod-data'][const.name])
-        ---@type elok.Names
+        ---@diagnostic disable-next-line: cast-type-mismatch
+        ---@cast mod_data elok.ModData
+
         local loco_data = assert(mod_data.data.locomotive)
 
         for type_name, types in pairs(loco_data) do

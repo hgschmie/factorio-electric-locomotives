@@ -57,7 +57,7 @@ function Locomotive:createLocomotive(entity)
         engine = {
             entity = entity,
             sprites = {},
-            tier = tonumber(entity.name:sub(entity.name:find('%d'))),
+            tier = assert(tonumber(entity.name:sub(entity.name:find('%d')))),
         }
 
         surface.engines[entity.unit_number] = engine
@@ -89,8 +89,10 @@ end
 ---@param technology_prefix string
 ---@return integer
 function Locomotive:determineTier(force_index, technology_prefix)
+
+    local force = assert(game.forces[force_index])
     for idx = 5, 1, -1 do
-        local technology = assert(game.forces[force_index].technologies[technology_prefix .. idx])
+        local technology = assert(force.technologies[technology_prefix .. idx])
         if technology.enabled and technology.researched then return idx end
     end
 

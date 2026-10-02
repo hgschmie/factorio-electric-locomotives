@@ -6,6 +6,7 @@ local Ticker = require('framework.ticker')
 
 This, Framework = require('lib.init')()
 
+---@diagnostic disable-next-line: unnecessary-if
 if storage.ticker then
     local state = Ticker.state()
 
