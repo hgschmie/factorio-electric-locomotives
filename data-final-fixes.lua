@@ -17,17 +17,17 @@ local WAGON_TYPES = {
 
 local unlock_max_speed = Framework.settings:startup_setting(const.settings_names.unlock_max_speed)
 
-if unlock_max_speed then
+local locomotive = assert(data.raw['locomotive']['locomotive'])
+local max_speed_factor = locomotive.max_speed
+
+if unlock_max_speed and max_speed_factor then
     -- scales any entity that can run behind a regular locomotive at full speed
     -- to be able to run after the fastest electric locomotive and not slow the train down.
     -- Entities that either can not run at full speed or run faster than the fastest electric
     -- locomotive are not touched
-    local locomotive = assert(data.raw['locomotive']['locomotive'])
-    local max_speed_factor = assert(locomotive.max_speed)
-
     for idx = 1, 3 do
         local loco_prototype = data.raw['locomotive'][const.locomotive_prefix .. idx]
-        if loco_prototype then max_speed_factor = math.max(max_speed_factor, assert(loco_prototype.max_speed)) end
+        if loco_prototype and loco_prototype.max_speed then max_speed_factor = math.max(max_speed_factor, loco_prototype.max_speed) end
     end
 
     -- scale to max bonus speed progression
@@ -37,7 +37,7 @@ if unlock_max_speed then
         for _, entity in pairs(data.raw[entity_type]) do
             -- there are some entities that are slower than a regular locomotive (e.g. cargo ships).
             -- don't touch those, they will not be connected to a "regular" train.
-            if (entity.max_speed or 0) >= locomotive.max_speed then
+            if entity.max_speed and entity.max_speed >= locomotive.max_speed then
                 entity.max_speed = math.max(max_speed_factor, entity.max_speed)
             end
         end
