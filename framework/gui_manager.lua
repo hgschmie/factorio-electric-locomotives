@@ -149,7 +149,7 @@ function FrameworkGuiManager:dispatch(event)
     local player_index = event.player_index
 
     -- find the GUI for the player
-    local gui_type = tostring(elem.tags['__GUI_TYPE'])
+    local gui_type = elem.tags['__GUI_TYPE'] and tostring(elem.tags['__GUI_TYPE']) or nil
     if not gui_type then return false end
 
     local gui = self:findGui(player_index, gui_type)
