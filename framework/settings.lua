@@ -91,7 +91,7 @@ local settings_table = {
 ---@return integer debuglevel 0..3
 function FrameworkSettings:get_debug_level()
     if not FrameworkSettings.DEBUG_LEVEL then
-        FrameworkSettings.DEBUG_LEVEL = self:startup_setting('debug_mode') --[[@as integer? ]]
+        FrameworkSettings.DEBUG_LEVEL = tonumber(self:startup_setting('debug_mode')) or 0
     end
     return FrameworkSettings.DEBUG_LEVEL or 0
 end
