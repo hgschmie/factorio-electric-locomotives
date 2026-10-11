@@ -41,9 +41,12 @@ function Player.additional_data(...)
 end
 
 --- Get `game.players[index]` & `storage.players[index]`, or create `storage.players[index]` if it doesn't exist.
----@param player (integer|string|LuaPlayer|EventData)? the player index to get data for
+---@param player? integer|string|LuaPlayer|EventData the player index, name, instance, or event
 ---@return LuaPlayer? player_instance the player instance
----@return table<string, any>? player_data the player data
+---@return table<string, any>? player_data the player's storage data
+-- @usage
+-- local Player = require('stdlib.event.player')
+-- local player, player_data = Player.get(event.player_index)
 function Player.get(player)
     player = Game.get_player(player)
     local pdata = player and Player.pdata(player.index) or nil
@@ -51,21 +54,21 @@ function Player.get(player)
 end
 
 --- Get the players saved data table. Creates it if it doesn't exist.
----@param player_index uint32
----@return table<string, any> player_data the player data
+---@param player_index uint32 The player index to get data for
+---@return table<string, any> player_data the player's storage data
 function Player.pdata(player_index)
     return storage.players and storage.players[player_index] or assert(Player.init(player_index))
 end
 
 --- Returns all known player indexes
---- @return integer[]
+---@return integer[]
 function Player.known_players()
     storage.players = storage.players or {}
     return table.keys(storage.players)
 end
 
 --- Merge a copy of the passed data to all players in `storage.players`.
--- @tparam table data a table containing variables to merge
+---@param data table a table containing variables to merge
 -- @usage local data = {a = 'abc', b = 'def'}
 -- Player.add_data_all(data)
 function Player.add_data_all(data)
@@ -79,16 +82,16 @@ function Player.add_data_all(data)
 end
 
 --- Remove data for a player when they are deleted.
--- @tparam table event event table containing the `player_index`
+---@param event table event table containing the `player_index`
 function Player.remove(event)
     storage.players[event.player_index] = nil
 end
 
 --- Init or re-init a player or players.
---- Passing a `nil` value will iterate all existing players.
----@param mixed (integer|string|LuaPlayer|EventData)? the player index to get data for
----@param overwrite boolean?
----@return table<string, any>? player_data
+-- Passing a `nil` value will iterate all existing players.
+---@param mixed? integer|string|LuaPlayer|EventData the player index, name, instance, or event
+---@param overwrite? boolean overwrite the player data
+---@return table<string, any>? player_data the newly initialized player's storage data
 function Player.init(mixed, overwrite)
     -- Create the storage.players table if it doesn't exisit
     storage.players = storage.players or {}
