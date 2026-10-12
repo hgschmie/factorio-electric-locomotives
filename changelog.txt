@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.4
-Date: ????
+Date: 2026-10-11
   Bugfixes:
     - Fix a crash when loading a save caused by comparing the string debug setting with a number
       (reported by @Schuby on the forums, thank you).
