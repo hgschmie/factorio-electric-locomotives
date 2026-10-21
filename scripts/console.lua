@@ -12,36 +12,33 @@ local const = require('lib.constants')
 ---@class elok.Console
 local Console = {}
 
----@param player LuaPlayer?
----@param force  LuaForce?
-local function print_research(player, force)
-    force = assert(force or (player and player.force --[[@as LuaForce]] or nil))
+---@param data CustomCommandData
+---@param force LuaForce
+local function print_research(data, force)
     local speed_tier = This.Locomotive:determineTier(force.index, const.technology_speed_prefix)
     local acceleration_tier = This.Locomotive:determineTier(force.index, const.technology_acceleration_prefix)
 
-    local output = player and player or game
-
-    ---@type PrintSettings
-    local print_settings = {
-        skip = defines.print_skip.if_visible,
-        sound = player and defines.print_sound.use_player_settings or defines.print_sound.never,
-    }
-
-    output.print({ const:locale('command_show_levels_speed'), speed_tier, ('%.2f'):format(const.speed_progression[speed_tier]) }, print_settings)
-    output.print({ const:locale('command_show_levels_acceleration'), acceleration_tier, ('%.2f'):format(const.acceleration_progression[acceleration_tier]) }, print_settings)
+    Framework.logger.console(function()
+        return { const:locale('command_show_levels_speed'), speed_tier, ('%.2f'):format(const.speed_progression[speed_tier]) }
+    end, data)
+    Framework.logger.console(function()
+        return { const:locale('command_show_levels_acceleration'), acceleration_tier, ('%.2f'):format(const.acceleration_progression[acceleration_tier]) }
+    end, data)
 end
 
 ---@param data CustomCommandData
 local function show_levels(data)
-    local player = data.player_index and game.players[data.player_index]
-
-    if player then
-        print_research(player)
+    if data.player_index then
+        local player = game.get_player(data.player_index)
+        if not player then return end
+        print_research(data, player.force)
     else
         for name, force in pairs(game.forces) do
             if name ~= 'enemy' and name ~= 'neutral' then
-                game.print { const:locale('command_show_levels_force'), name }
-                print_research(player, force)
+                Framework.logger.console(function()
+                    return { const:locale('command_show_levels_force'), name }
+                end, data)
+                print_research(data, force)
             end
         end
     end
